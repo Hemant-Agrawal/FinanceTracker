@@ -7,10 +7,10 @@ import { Badge } from '@/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/tabs';
 import { formatCurrency, getStatusColor } from '@/lib/utils';
 import { formatDateWithTime } from '@/lib/date';
-import { AddTransactionModal } from '@/components/transactions/transaction-form';
 import { DeleteTransactionModal } from '@/components/transactions/delete-transaction-modal';
 import { Transaction } from '@/models/Transaction';
 import HistoryCard from '../common/history';
+import Link from 'next/link';
 
 interface TransactionDetailsModalProps {
   isOpen: boolean;
@@ -26,12 +26,12 @@ export function TransactionDetailsModal({ isOpen, transaction, onClose }: Transa
           <DialogTitle className="flex items-center justify-between">
             <span>Transaction Details</span>
             <div className="flex items-center gap-2 pr-4">
-              <AddTransactionModal transaction={transaction} isEdit paymentMethods={[]}>
+              <Link href={`/transactions/${transaction._id}`}>
                 <Button variant="outline" size="sm" className="flex items-center gap-1">
                   <Edit className="h-4 w-4" />
                   Edit
                 </Button>
-              </AddTransactionModal>
+              </Link>
               <DeleteTransactionModal transaction={transaction}>
                 <Button variant="destructive" size="sm" className="flex items-center gap-1">
                   <Trash className="h-4 w-4" />

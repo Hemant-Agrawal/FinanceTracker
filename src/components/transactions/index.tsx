@@ -5,9 +5,10 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { TransactionsTable } from './transactions-table';
 import TransactionCard from './transaction-card';
 import { useTableGridContext } from '@/table-grid-view/provider';
+import { WithId } from 'mongodb';
 
 interface TransactionListProps {
-  transactions: Transaction[];
+  transactions: WithId<Transaction>[];
 }
 
 export default function Transactions({ transactions }: TransactionListProps) {

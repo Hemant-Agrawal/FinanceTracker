@@ -21,26 +21,6 @@ const MONTHLY_DATA = [
   { date: 'Dec', value: 1250000 },
 ];
 
-const YEARLY_DATA = [
-  { date: '2018', value: 800000 },
-  { date: '2019', value: 900000 },
-  { date: '2020', value: 950000 },
-  { date: '2021', value: 1050000 },
-  { date: '2022', value: 1150000 },
-  { date: '2023', value: 1250000 },
-];
-
-const QUARTERLY_DATA = [
-  { date: 'Q1 2022', value: 1000000 },
-  { date: 'Q2 2022', value: 1050000 },
-  { date: 'Q3 2022', value: 1100000 },
-  { date: 'Q4 2022', value: 1150000 },
-  { date: 'Q1 2023', value: 1180000 },
-  { date: 'Q2 2023', value: 1200000 },
-  { date: 'Q3 2023', value: 1220000 },
-  { date: 'Q4 2023', value: 1250000 },
-];
-
 const Performance = () => {
 
   return (

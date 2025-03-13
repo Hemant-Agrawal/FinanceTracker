@@ -16,7 +16,7 @@ export interface SplitExpense {
   parties: SplitParty[];
 }
 
-export interface Paymentethod {
+export interface PaymentMethod {
   _id: ObjectId;
   name: string;
   type: string;
@@ -27,7 +27,7 @@ export interface Transaction extends Model {
   amount: number;
   date: string;
   type: TransactionType;
-  paymentMethod: Paymentethod;
+  paymentMethod: PaymentMethod;
   tags: string[];
   notes?: string;
   category?: string;

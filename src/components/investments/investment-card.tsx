@@ -9,12 +9,12 @@ import { cn, formatCurrency, getStatusColor } from '@/lib/utils';
 import { Investment } from '@/models/Investment';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuContent, DropdownMenuTrigger } from '@/ui/dropdown-menu';
 import { Checkbox } from '@/ui/checkbox';
-
+import { WithId } from 'mongodb';
 interface InvestmentCardProps {
-  investment: Investment;
+  investment: WithId<Investment>;
   selectedInvestments: string[];
   onSelectInvestment: (id: string, isSelected: boolean) => void;
-  onViewDetails: (investment: Investment) => void;
+  onViewDetails: (investment: WithId<Investment>) => void;
 }
 
 export default function InvestmentCard({ investment, selectedInvestments, onSelectInvestment, onViewDetails }: InvestmentCardProps) {

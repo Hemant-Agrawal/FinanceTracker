@@ -16,15 +16,15 @@ interface FilterSidebarProps {
       options: FilterOption[];
     };
   };
-  onApplyFilters: (filters: any) => void;
+  onApplyFilters: (filters: Record<string, string | string[] | null>) => void;
 }
 
 export function FilterSidebar({ filters, onApplyFilters, children }: FilterSidebarProps) {
-  const [selectedFilters, setSelectedFilters] = useState<any>({});
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, unknown>>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const handleFilterChange = (filterKey: string, value: any) => {
-    setSelectedFilters((prev: any) => ({
+  const handleFilterChange = (filterKey: string, value: unknown) => {
+    setSelectedFilters((prev: Record<string, unknown>) => ({
       ...prev,
       [filterKey]: value,
     }));
@@ -35,7 +35,7 @@ export function FilterSidebar({ filters, onApplyFilters, children }: FilterSideb
   };
 
   const handleApplyFilters = () => {
-    onApplyFilters(selectedFilters);
+    onApplyFilters(selectedFilters as Record<string, string | string[] | null>);
     setIsSidebarOpen(false);
   };
 

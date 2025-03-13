@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar';
+import { Avatar, AvatarFallback } from '@/ui/avatar';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 

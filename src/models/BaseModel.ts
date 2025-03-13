@@ -6,6 +6,7 @@ import {
   MongoClient,
   ObjectId,
   OptionalUnlessRequiredId,
+  Sort,
   WithId,
 } from 'mongodb';
 import clientPromise from '@/lib/db';
@@ -78,12 +79,12 @@ export class BaseModel<T extends Model> {
     return this.collection.findOne({
       _id: new ObjectId(id),
       isDeleted: { $ne: true },
-    } as any);
+    } as Filter<T>);
   }
 
   // Find all documents with optional filter
   async find(filter: Partial<T> = {}): Promise<WithId<T>[]> {
-    return this.collection.find(filter as any).toArray();
+    return this.collection.find(filter as Filter<T>).toArray();
   }
 
   // Update a document by ID
@@ -92,7 +93,7 @@ export class BaseModel<T extends Model> {
     if (userId) {
       updatedData.updatedBy = userId;
     }
-    const result = await this.collection.updateOne({ _id: new ObjectId(id) } as any, { $set: updatedData });
+    const result = await this.collection.updateOne({ _id: new ObjectId(id) } as Filter<T>, { $set: updatedData });
     return result.modifiedCount > 0;
   }
 
@@ -102,7 +103,7 @@ export class BaseModel<T extends Model> {
   }
 
   // List all documents with optional sorting and pagination
-  async list(filter: Filter<T> = {}, limit = 10, skip = 0, sort: any = {}): Promise<WithId<T>[]> {
+  async list(filter: Filter<T> = {}, limit = 10, skip = 0, sort: Sort = {}): Promise<WithId<T>[]> {
     return this.collection
       .find({ ...filter, isDeleted: { $ne: true } })
       .sort(sort)
@@ -112,7 +113,7 @@ export class BaseModel<T extends Model> {
   }
 
   // Get paginated results with metadata
-  async paginate(filter: Filter<T> = {}, page = 1, itemsPerPage = 10, sort: any = {}): Promise<PaginatedResult<T>> {
+  async paginate(filter: Filter<T> = {}, page = 1, itemsPerPage = 10, sort: Sort = {}): Promise<PaginatedResult<T>> {
     // Ensure page is at least 1
     page = Math.max(1, page);
 

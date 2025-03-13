@@ -150,7 +150,7 @@ export default function HomePage() {
             ].map((testimonial, index) => (
               <Card key={index}>
                 <CardContent className="pt-6">
-                  <p className="text-muted-foreground mb-4">"{testimonial.content}"</p>
+                  <p className="text-muted-foreground mb-4">&quot;{testimonial.content}&quot;</p>
                   <div className="flex items-center">
                     <div className="ml-4">
                       <p className="font-semibold">{testimonial.name}</p>

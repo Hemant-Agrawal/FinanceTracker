@@ -2,7 +2,7 @@ import { Transaction } from '@/models/Transaction';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? '';
 
-export async function apiRequest(endpoint: string, method = 'GET', data: any = {}) {
+export async function apiRequest(endpoint: string, method = 'GET', data: Record<string, unknown> = {}) {
   const url = new URL(`${BASE_URL}/api${endpoint}`);
   if (method === 'GET' && data) {
     Object.keys(data).forEach(key => url.searchParams.append(key, String(data[key])));
@@ -21,19 +21,19 @@ export async function apiRequest(endpoint: string, method = 'GET', data: any = {
   return res.json();
 }
 
-export async function getRequest(endpoint: string, params?: Record<string, any>) {
+export async function getRequest(endpoint: string, params = {}) {
   return apiRequest(endpoint, 'GET', params);
 }
 
-export async function postRequest(endpoint: string, data: any) {
+export async function postRequest(endpoint: string, data = {}) {
   return apiRequest(endpoint, 'POST', data);
 }
 
-export async function deleteRequest(endpoint: string, id: string) {
+export async function deleteRequest(endpoint: string) {
   return apiRequest(endpoint, 'DELETE');
 }
 
-export async function patchRequest(endpoint: string, data: any) {
+export async function patchRequest(endpoint: string, data = {}) {
   return apiRequest(endpoint, 'PATCH', data);
 }
 

@@ -4,9 +4,10 @@ import { AccountsTable } from './accounts-table';
 import { Account } from '@/models/Account';
 import { useTableGridContext } from '@/table-grid-view/provider';
 import { useRouter } from 'next/navigation';
+import { WithId } from 'mongodb';
 
 interface Props {
-  accounts: Account[];
+  accounts: WithId<Account>[];
 }
 
 const Accounts = ({ accounts }: Props) => {

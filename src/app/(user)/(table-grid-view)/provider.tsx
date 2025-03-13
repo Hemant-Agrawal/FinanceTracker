@@ -1,6 +1,6 @@
 'use client';
 
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 // Define context type
@@ -19,18 +19,19 @@ interface TableGridContextType<T extends { _id: string | ObjectId }> {
 }
 
 // Create context with default values
-const TableGridContext = createContext<TableGridContextType<any>>({
+
+const TableGridContext = createContext<TableGridContextType<unknown & {_id: string | ObjectId}>>({
   // data: [],
   // setData: () => {},
   selectedItems: [],
-  handleSelectItem: () => {},
-  handleSelectAll: () => {},
-  handleBulkDelete: () => {},
+  handleSelectItem: () => null,
+  handleSelectAll: () => null,
+  handleBulkDelete: () => null,
 
   isDetailsModalOpen: false,
-  setIsDetailsModalOpen: () => {},
+  setIsDetailsModalOpen: () => null,
   currentItem: null,
-  handleViewItem: () => {},
+  handleViewItem: () => null,
 });
 
 // Provider Props
@@ -40,14 +41,15 @@ interface TableGridProviderProps<T> {
 }
 
 // Provider Component
-export const TableGridProvider = <T extends WithId<{}>>({
+export const TableGridProvider = <T extends {_id: string | ObjectId}>({
   children,
   initialData = [],
 }: TableGridProviderProps<T>) => {
+  console.log('initialData', initialData);
   // const [data, setData] = useState<T[]>(initialData);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [currentItem, setCurrentItem] = useState<any | null>(null);
+  const [currentItem, setCurrentItem] = useState<T | null>(null);
 
   // View item details
   const handleViewItem = (item: T) => {
@@ -77,11 +79,13 @@ export const TableGridProvider = <T extends WithId<{}>>({
         // setData,
         selectedItems,
         handleSelectItem,
+        // @ts-expect-error - this is a workaround to avoid type errors
         handleSelectAll,
         handleBulkDelete,
         isDetailsModalOpen,
         setIsDetailsModalOpen,
         currentItem,
+        // @ts-expect-error - this is a workaround to avoid type errors
         handleViewItem,
       }}
     >
@@ -93,12 +97,12 @@ export const TableGridProvider = <T extends WithId<{}>>({
 // Custom hook to use the context
 export const useTableGridContext = () => useContext(TableGridContext);
 
-export function withDataProvider<T extends WithId<{}>>(Component: React.ComponentType, initialData: T[]) {
-  return function WrappedComponent(props: any) {
-    return (
-      <TableGridProvider initialData={initialData}>
-        <Component {...props} />
-      </TableGridProvider>
-    );
-  };
-}
+// export function withDataProvider<T extends {_id: string | ObjectId}>(Component: React.ComponentType, initialData: T[]) {
+//   return function WrappedComponent(props: any) {
+//     return (
+//       <TableGridProvider initialData={initialData}>
+//         <Component {...props} />
+//       </TableGridProvider>
+//     );
+//   };
+// }

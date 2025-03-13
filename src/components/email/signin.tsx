@@ -53,12 +53,12 @@ export const MagicLinkEmail = ({ magicLink, name = '', isNewUser = false }: Magi
               </Button>
             </Section>
 
-            <Text className="text-sm text-gray-500">If you didn't request this email, you can safely ignore it.</Text>
+            <Text className="text-sm text-gray-500">If you didn&apos;t request this email, you can safely ignore it.</Text>
 
             <Hr className="my-6 border-gray-300" />
 
             <Text className="text-xs text-gray-500">
-              If the button above doesn't work, copy and paste this URL into your browser:
+              If the button above doesn&apos;t work, copy and paste this URL into your browser:
             </Text>
             <Link href={magicLink} className="block break-all text-xs text-blue-600">
               {magicLink}

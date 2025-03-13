@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { InvestmentTransactionColl } from '@/models';
 import { auth } from '@/auth';
 
-export const GET = auth(async function (req) {
-  if (!req.auth?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
+export const GET = async function (req: Request) {
+  const authUser = await auth();
+  if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const { searchParams } = new URL(req.url);
 
   // Pagination
@@ -12,7 +13,7 @@ export const GET = auth(async function (req) {
 
   // Filters
   const type = searchParams.get('type') || undefined; // Filter by investment type
-  const filters: any = {};
+  const filters: Record<string, unknown> = {};
   if (type) filters.type = type;
 
   // Sorting
@@ -23,11 +24,12 @@ export const GET = auth(async function (req) {
     [sortField]: sortOrder,
   });
   return NextResponse.json(transactions);
-});
+};
 
-export const POST = auth(async function (req) {
-  if (!req.auth?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
+export const POST = async function (req: Request) {
+  const authUser = await auth();
+  if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const body = await req.json();
-  const newTransaction = await InvestmentTransactionColl.insert(body, req.auth.user.id);
+  const newTransaction = await InvestmentTransactionColl.insert(body, authUser.user.id);
   return NextResponse.json(newTransaction, { status: 201 });
-});
+};

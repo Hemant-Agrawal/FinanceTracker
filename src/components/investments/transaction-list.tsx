@@ -263,12 +263,12 @@ export function TransactionList() {
                             transaction.type === 'Buy'
                               ? 'default'
                               : transaction.type === 'Sell'
-                                ? 'secondary'
+                                ? 'destructive'
                                 : transaction.type === 'Dividend'
                                   ? 'outline'
                                   : transaction.type === 'Interest'
                                     ? 'outline'
-                                    : 'success'
+                                    : 'secondary'
                           }
                         >
                           {transaction.type}

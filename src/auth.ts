@@ -29,26 +29,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     verifyRequest: '/auth/verifyRequest',
   },
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn() {
       // console.log('signIn', {user, account, profile, email, credentials})
       return true;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ baseUrl }) {
       // console.log('redirect', {url, baseUrl})
       return baseUrl;
     },
-    async session({ session, user, token }) {
+    async session({ session, token }) {
       // console.log('session', { session, user, token });
       if (session.user && token.sub) {
         session.user.id = token.sub;
       }
       return session;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token }) {
       // console.log('jwt', { token, user, account, profile, isNewUser });
-      if (user) {
-        token.id = user.id;
-      }
+        // if (user) {
+        //   token.id = user.id;
+        // }
       return token;
     },
     authorized: async ({ auth }) => {

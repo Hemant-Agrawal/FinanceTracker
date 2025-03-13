@@ -16,8 +16,6 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export const fetchCache = 'no-store';
-
 export default async function AccountsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const { data: accounts, pagination } = await fetchAccounts(params);

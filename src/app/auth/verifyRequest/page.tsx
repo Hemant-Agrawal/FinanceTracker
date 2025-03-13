@@ -7,7 +7,7 @@ import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function VerifyPage() {
   const router = useRouter();
-  const [verificationStatus, setVerificationStatus] = useState<'pending' | 'success' | 'error'>('pending');
+  const [verificationStatus] = useState<'pending' | 'success' | 'error'>('pending');
 
   const openGmail = () => {
     const gmailUrl = 'https://mail.google.com/';
@@ -32,7 +32,7 @@ export default function VerifyPage() {
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
             <h1 className="text-2xl font-semibold tracking-tight">Verifying your magic link...</h1>
             <p className="text-center text-sm text-muted-foreground">
-              This won't take long. We're making sure it's really you!
+              This won&apos;t take long. We&apos;re making sure it&apos;s really you!
             </p>
           </>
         )}
@@ -41,7 +41,7 @@ export default function VerifyPage() {
             <CheckCircle2 className="h-16 w-16 text-green-500" />
             <h1 className="text-2xl font-semibold tracking-tight">Verification successful!</h1>
             <p className="text-center text-sm text-muted-foreground">
-              Great news! You're verified. We're redirecting you to the dashboard...
+              Great news! You&apos;re verified. We&apos;re redirecting you to the dashboard...
             </p>
           </>
         )}

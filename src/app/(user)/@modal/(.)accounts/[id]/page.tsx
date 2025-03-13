@@ -12,13 +12,7 @@ export const metadata: Metadata = {
   description: 'View and manage your account details',
 };
 
-interface AccountPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function AccountPage({ params }: AccountPageProps) {
+export default async function AccountPageModal({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const account = await getAccountById(id);
 
@@ -27,7 +21,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
   }
 
   const actions = [
-    <Link href={`/accounts/${id}`}>
+    <Link key="view" href={`/accounts/${id}`}>
       <Button variant="outline">
         <Eye className="h-4 w-4" />
         View

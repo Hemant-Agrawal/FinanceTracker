@@ -4,13 +4,13 @@ import { Column, DataTable } from '../common/table';
 import { cn, getStatusColor } from '@/lib/utils';
 import { Badge } from '../ui/badge';
 import { formatCurrency, getInvestmentTypeIcon } from '@/lib/utils';
-
+import { WithId } from 'mongodb';
 interface Props {
-  investments: Investment[];
+  investments: WithId<Investment>[];
   selectedInvestments: string[];
   onSelectInvestment: (id: string, isSelected: boolean) => void;
   onSelectAll: (isSelected: boolean) => void;
-  onViewDetails: (investment: Investment) => void;
+  onViewDetails: (investment: WithId<Investment>) => void;
 }
 
 export function InvestmentsTable({
@@ -21,7 +21,7 @@ export function InvestmentsTable({
   onViewDetails,
 }: Props) {
 
-  const columns: Column<Investment>[] = [
+  const columns: Column<WithId<Investment>>[] = [
     {
       key: 'name',
       label: 'Investment Name',

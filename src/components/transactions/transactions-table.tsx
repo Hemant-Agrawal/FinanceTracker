@@ -6,13 +6,14 @@ import { formatCurrency, getPaymentMethodIcon, getStatusColor } from '@/lib/util
 import { Column, DataTable } from '@/components/common/table';
 import { Transaction } from '@/models/Transaction';
 import { formatDate, formatTime } from '@/lib/date';
+import { WithId } from 'mongodb';
 
 interface Props {
-  transactions: Transaction[];
+  transactions: WithId<Transaction>[];
   selectedTransactions?: string[];
   onSelectTransaction?: (id: string, isSelected: boolean) => void;
   onSelectAll?: (isSelected: boolean) => void;
-  onViewTransaction?: (transaction: Transaction) => void;
+  onViewTransaction?: (transaction: WithId<Transaction>) => void;
   showTime?: boolean;
 }
 

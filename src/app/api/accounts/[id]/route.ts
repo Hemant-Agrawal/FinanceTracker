@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { AccountColl, TransactionColl } from '@/models';
 import { auth } from '@/auth';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await auth();
   if (!user) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const { id } = await params;
@@ -10,7 +10,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return account ? NextResponse.json(account) : NextResponse.json({ message: 'Not Found' }, { status: 404 });
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await auth();
   if (!user) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const { id } = await params;
@@ -19,7 +19,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   return NextResponse.json(updated);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const user = await auth();
   if (!user) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const { id } = await params;

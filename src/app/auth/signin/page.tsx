@@ -26,6 +26,7 @@ export default function SignIn() {
         });
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: 'Error',
         description: 'An error occurred during sign in.',

@@ -7,7 +7,6 @@ import { Button } from '@/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/ui/card';
 import { Switch } from '@/ui/switch';
 import { Input } from '@/ui/input';
 import { patchRequest } from '@/lib/api';

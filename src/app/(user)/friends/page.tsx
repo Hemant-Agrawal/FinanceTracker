@@ -6,18 +6,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 
-type Friend = {
-  id: string;
-  name: string;
-  avatar: string;
-};
+// type Friend = {
+//   id: string;
+//   name: string;
+//   avatar: string;
+// };
 
 export default function FriendsPage() {
-  const [friends, setFriends] = useState<Friend[]>([
+  const friends = [
     { id: '1', name: 'Alice Johnson', avatar: '/avatars/01.png' },
     { id: '2', name: 'Bob Smith', avatar: '/avatars/02.png' },
     { id: '3', name: 'Charlie Brown', avatar: '/avatars/03.png' },
-  ]);
+  ];
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredFriends = friends.filter(friend => friend.name.toLowerCase().includes(searchTerm.toLowerCase()));

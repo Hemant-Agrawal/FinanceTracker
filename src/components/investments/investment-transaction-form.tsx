@@ -42,6 +42,7 @@ export function InvestmentTransactionForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // In a real app, this would save the transaction to the database
+    console.log(values);
     toast({
       title: 'Transaction recorded',
       description: 'Your investment transaction has been recorded successfully.',

@@ -1,7 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/ui/dialog';
 import { formatCurrency } from '@/lib/utils';
-import { Clock, ArrowUpDown } from 'lucide-react';
-import { Badge } from '@/ui/badge';
+import { Clock } from 'lucide-react';
 import { Transaction } from '@/models/Transaction';
 import { formatDateWithTime } from '@/lib/date';
 import HistoryCard from '../common/history';

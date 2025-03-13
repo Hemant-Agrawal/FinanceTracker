@@ -46,7 +46,7 @@ export function DataTable<T>({
   data,
   selectedRows = [],
   actions = [],
-  getRowId = (row: T) => (row as any)._id,
+  getRowId = (row: T) => (row as unknown as { _id: string })._id,
   onSelectRow,
   onSelectAll,
   onRowClick,

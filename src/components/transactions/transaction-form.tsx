@@ -1,7 +1,7 @@
 'use client';
 
 import {  useEffect } from 'react';
-import { Upload, Plus, Minus } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Label } from '@/ui/label';
@@ -9,11 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/ui/textarea';
 import { Calendar } from '@/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import dayjs from 'dayjs';
-import { Transaction } from '@/models/Transaction';
+import { PaymentMethod, Transaction } from '@/models/Transaction';
 import { createTransaction, updateTransaction } from '@/lib/api';
 import { Account } from '@/models/Account';
 import { WithId } from 'mongodb';
@@ -34,6 +34,8 @@ const schema = yup.object().shape({
   tags: yup.array().of(yup.string()),
 });
 
+type TransactionFormValues = yup.InferType<typeof schema>;
+
 export function TransactionForm({ transaction, paymentMethods }: TransactionFormProps) {
   const isEdit = Boolean(transaction);
   const router = useRouter();
@@ -43,7 +45,7 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({
+  } = useForm<TransactionFormValues>({
     resolver: yupResolver(schema),
     defaultValues: {
       description: '',
@@ -69,7 +71,7 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
     }
   }, [transaction, isEdit, reset]);
 
-  const onSubmit = async (data: any) => {
+  const onSubmit : SubmitHandler<TransactionFormValues> = async (data) => {
     const parsedAmount = data.type === 'expense' ? -Math.abs(data.amount) : Math.abs(data.amount);
 
     const newTransaction: Transaction = {
@@ -77,8 +79,8 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
       description: data.description,
       amount: parsedAmount,
       date: data.date.toISOString(),
-      paymentMethod: data.paymentMethod,
-      tags: data.tags,
+      paymentMethod: data.paymentMethod as unknown as PaymentMethod,
+      tags: data.tags as string[],
       notes: data.notes,
       type: data.type,
       history: [],

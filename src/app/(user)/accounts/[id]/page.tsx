@@ -14,13 +14,7 @@ export const metadata: Metadata = {
   description: 'View and manage your account details',
 };
 
-interface AccountPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default async function AccountPage({ params }: AccountPageProps) {
+export default async function AccountPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const account = await getAccountById(id);
 

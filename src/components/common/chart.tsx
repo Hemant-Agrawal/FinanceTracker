@@ -7,12 +7,13 @@ import {
   ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
+  ChartConfig,
 } from '@/components/ui/chart';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { CurveType } from 'recharts/types/shape/Curve';
 
 interface GenericChartProps {
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   type: 'line' | 'bar' | 'pie';
   dataKeys: string[]; // Support multiple data keys
   xAxisKey?: string;
@@ -25,7 +26,7 @@ interface GenericChartProps {
   barLayout?: 'horizontal' | 'vertical';
   pieInnerRadius?: number;
   pieOuterRadius?: number;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 const GenericChart: React.FC<GenericChartProps> = ({
@@ -102,7 +103,7 @@ const GenericChart: React.FC<GenericChartProps> = ({
     };
     
     return (
-      <ChartContainer config={config} className="w-full h-full">
+      <ChartContainer config={config as ChartConfig} className="w-full h-full">
       {renderChart()}
     </ChartContainer>
   );

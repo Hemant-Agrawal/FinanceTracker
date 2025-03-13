@@ -26,7 +26,7 @@ export function DeleteAccountModal({ account, children }: DeleteAccountModalProp
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const onDelete = () => {
-    deleteRequest('/accounts', `${account._id}`).then(() => {
+    deleteRequest(`/accounts/${account._id}`).then(() => {
       router.refresh();
       toast({
         title: 'Account Deleted',

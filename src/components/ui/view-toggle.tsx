@@ -1,6 +1,6 @@
 'use client';
 
-import { Grid3X3, LayoutGrid, List } from 'lucide-react';
+import { Grid3X3, List } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/ui/tooltip'
 import { useRouter, useSearchParams } from 'next/navigation';

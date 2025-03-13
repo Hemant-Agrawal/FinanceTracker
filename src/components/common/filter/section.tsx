@@ -16,8 +16,8 @@ interface FilterSectionProps {
   title: string
   type: FilterType
   options: FilterOption[]
-  value: any
-  onChange: (value: any) => void
+  value: unknown
+  onChange: (value: unknown) => void
 }
 
 export function FilterSection({ title, type, options, value, onChange }: FilterSectionProps) {
@@ -30,11 +30,11 @@ export function FilterSection({ title, type, options, value, onChange }: FilterS
               <div key={option.value} className="flex items-center space-x-2">
                 <Checkbox
                   id={`${title}-${option.value}`}
-                  checked={(value || []).includes(option.value)}
+                  checked={(value as unknown as string[]).includes(option.value as string)}
                   onCheckedChange={(checked) => {
                     const newValue = checked
-                      ? [...(value || []), option.value]
-                      : (value || []).filter((v: string) => v !== option.value)
+                      ? [...(value as unknown as string[]), option.value]
+                      : (value as unknown as string[]).filter((v: string) => v !== option.value)
                     onChange(newValue)
                   }}
                 />
@@ -45,7 +45,7 @@ export function FilterSection({ title, type, options, value, onChange }: FilterS
         )
       case "radio":
         return (
-          <RadioGroup value={value} onValueChange={onChange}>
+          <RadioGroup value={value as unknown as string} onValueChange={onChange}>
             {options.map((option) => (
               <div key={option.value} className="flex items-center space-x-2">
                 <RadioGroupItem value={option.value.toString()} id={`${title}-${option.value}`} />
@@ -61,12 +61,12 @@ export function FilterSection({ title, type, options, value, onChange }: FilterS
               min={Number(options[0].value)}
               max={Number(options[1].value)}
               step={(Number(options[1].value) - Number(options[0].value)) / 100}
-              value={value || [Number(options[0].value), Number(options[1].value)]}
+              value={value as unknown as number[]}
               onValueChange={onChange}
             />
             <div className="flex justify-between text-sm">
-              <span>{value ? value[0] : options[0].value}</span>
-              <span>{value ? value[1] : options[1].value}</span>
+              <span>{value ? (value as unknown as number[])[0] : options[0].value}</span>
+              <span>{value ? (value as unknown as number[])[1] : options[1].value}</span>
             </div>
           </div>
         )

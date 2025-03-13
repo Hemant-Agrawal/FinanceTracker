@@ -9,15 +9,16 @@ export default async function TransactionModal({ params }: { params: Promise<{ i
   const photoId = (await params).id;
 
   const transaction = await getTransactionById(photoId);
+  console.log(transaction);
 
   const actions = [
-    <Link href={`/transactions/${photoId}/edit`}>
+    <Link key="edit" href={`/transactions/${photoId}/edit`}>
       <Button variant="outline" size="sm" className="flex items-center gap-1">
         <Edit className="h-4 w-4" />
         Edit
       </Button>
     </Link>,
-    <Link href={`/transactions/${photoId}/delete`}>
+    <Link key="delete" href={`/transactions/${photoId}/delete`}>
       <Button variant="destructive" size="sm" className="flex items-center gap-1">
         <Trash className="h-4 w-4" />
         Delete

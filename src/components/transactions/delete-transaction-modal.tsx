@@ -26,7 +26,7 @@ export function DeleteTransactionModal({ transaction, children }: DeleteTransact
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const onDelete = () => {
-    deleteRequest('/transactions', `${transaction._id}`).then(() => {
+    deleteRequest(`/transactions/${transaction._id}`).then(() => {
       router.refresh();
       toast({
         title: 'Transaction Deleted',

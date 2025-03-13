@@ -22,7 +22,7 @@ import {
 import { cn } from '@/lib/utils';
 import { Investment } from '@/models/Investment';
 import { formatDateWithTime } from '@/lib/date';
-
+import { WithId } from 'mongodb';
 // Sample historical data - would be fetched from API in production
 const generateHistoricalData = (investment: Investment) => {
   const data = [];
@@ -135,7 +135,7 @@ const generateDividendData = (investment: Investment) => {
 };
 
 interface InvestmentDetailsDialogProps {
-  investment: Investment;
+  investment: WithId<Investment>;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -413,7 +413,7 @@ export function InvestmentDetailsDialog({ investment, open, onOpenChange }: Inve
                 <div className="h-[300px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart
-                      data={historicalData.map((item, index) => ({
+                      data={historicalData.map((item) => ({
                         ...item,
                         benchmark: item.price * (0.9 + Math.random() * 0.2),
                       }))}

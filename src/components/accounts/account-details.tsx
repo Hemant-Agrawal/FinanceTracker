@@ -6,7 +6,7 @@ import { formatDateWithTime } from '@/lib/date';
 import { Account } from '@/models/Account';
 import { WithId } from 'mongodb';
 
-export function AccountDetails({ name, type, openingBalance, currentBalance, updatedAt }: WithId<Account>) {
+export function AccountDetails({ type, openingBalance, currentBalance, updatedAt }: WithId<Account>) {
   return (
     <div className="grid gap-4 border rounded-md p-4">
       <div className="flex items-center justify-between">

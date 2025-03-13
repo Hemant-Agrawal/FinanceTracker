@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb';
 import { BaseModel, Model } from './BaseModel';
 
 export interface User extends Model {

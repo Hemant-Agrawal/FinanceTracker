@@ -3,7 +3,6 @@ import React from 'react';
 import { Button } from '../ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PaginationType } from '@/models';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useSearchParamsManager } from '@/hooks/use-params';
 
 interface PaginationProps extends PaginationType {

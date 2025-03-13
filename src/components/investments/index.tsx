@@ -1,15 +1,14 @@
 'use client';
 
-import { Transaction } from '@/models/Transaction';
 import { useSearchParams } from 'next/navigation';
 import { InvestmentsTable } from './investments-table';
 import InvestmentCard from './investment-card';
 import { useTableGridContext } from '@/table-grid-view/provider';
 import { Investment } from '@/models/Investment';
 import { InvestmentDetailsDialog } from './investment-details-dialog';
-
+import { WithId } from 'mongodb';
 interface InvestmentListProps {
-  investments: Investment[];
+  investments: WithId<Investment>[];
 }
 
 export default function Investments({ investments }: InvestmentListProps) {
@@ -56,7 +55,7 @@ export default function Investments({ investments }: InvestmentListProps) {
       {isDetailsModalOpen && currentItem && (
         <InvestmentDetailsDialog
           open={isDetailsModalOpen}
-          investment={currentItem}
+          investment={currentItem as WithId<Investment>}
           onOpenChange={setIsDetailsModalOpen}
         />
       )}

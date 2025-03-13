@@ -11,7 +11,7 @@ async function authenticate(token: string) {
     return auth;
 }
 
-async function checkForCASEmail(token: string) {
+export async function checkForCASEmail(token: string) {
     const auth = await authenticate(token);
     const gmail = google.gmail({ version: 'v1', auth });
 
@@ -26,8 +26,9 @@ async function checkForCASEmail(token: string) {
     }
 
     for (const msg of res.data.messages) {
+        // @ts-expect-error - gmail api types are not updated
         const email = await gmail.users.messages.get({ userId: 'me', id: msg.id });
-
+        // @ts-expect-error - gmail api types are not updated
         console.log('✅ CAS Email Found! Subject:', email.data.payload?.headers?.find(h => h.name === 'Subject')?.value);
     }
 }
