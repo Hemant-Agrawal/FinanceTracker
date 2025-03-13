@@ -14,9 +14,10 @@ export async function apiRequest(endpoint: string, method = 'GET', data: Record<
   if (method === 'GET' && data) {
     Object.keys(data).forEach(key => url.searchParams.append(key, String(data[key])));
   }
+  const headersList = await headers();
   const options: RequestInit = {
     method,
-    headers: await headers(),
+    headers: new Headers(headersList),
     body: method !== 'GET' && data ? JSON.stringify(data) : undefined,
   };
   const res = await fetch(url.toString(), options);
