@@ -51,7 +51,7 @@ const TOP_LOSERS = [
 ]
 
 export default async function TopPerformers() {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
   return (
     <Card>

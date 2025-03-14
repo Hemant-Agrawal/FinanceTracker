@@ -32,7 +32,7 @@ const getAlertVariant = (type: string) => {
 }
 
 const Recommendations = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
   const recommendations = [
     {

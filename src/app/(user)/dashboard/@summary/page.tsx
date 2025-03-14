@@ -3,7 +3,7 @@ import { ArrowDownIcon, ArrowUpIcon, BarChart3, TrendingUp, Wallet, Calendar } f
 import { cn } from '@/lib/utils';
 
 const Summary = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 1500));
 
   const portfolioData = {
     totalValue: 1250000,
