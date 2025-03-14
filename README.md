@@ -1,5 +1,5 @@
 
-## 🚀 [View Live Demo](https://financetracker-demo.netlify.app)
+## 🚀 [View Live Demo](https://finance-tracker-orpin-rho.vercel.app/)
 
 image.png
 
