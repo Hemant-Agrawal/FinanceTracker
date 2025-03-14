@@ -84,6 +84,7 @@ export class BaseModel<T extends Model> {
 
   // Find all documents with optional filter
   async find(filter: Partial<T> = {}): Promise<WithId<T>[]> {
+    console.log('this.db', this.db.databaseName, this.collection?.collectionName);
     return this.collection.find(filter as Filter<T>).toArray();
   }
 
