@@ -9,7 +9,7 @@ import {
   Sort,
   WithId,
 } from 'mongodb';
-import clientPromise from '@/lib/db';
+import { connectClient } from '@/lib/mongodb';
 
 export interface Model {
   _id?: ObjectId;
@@ -44,7 +44,7 @@ export class BaseModel<T extends Model> {
   }
 
   private async init() {
-    this.client = await clientPromise;
+    this.client = await connectClient();
     this.db = this.client.db();
 
     this.collection = this.db.collection<T>(this.collectionName);
