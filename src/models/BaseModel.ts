@@ -9,7 +9,7 @@ import {
   Sort,
   WithId,
 } from 'mongodb';
-import clientPromise from '@/lib/db';
+import { connectClient } from '@/lib/mongodb';
 
 export interface Model {
   _id?: ObjectId;
@@ -44,7 +44,7 @@ export class BaseModel<T extends Model> {
   }
 
   private async init() {
-    this.client = await clientPromise;
+    this.client = await connectClient();
     this.db = this.client.db();
 
     this.collection = this.db.collection<T>(this.collectionName);
@@ -84,7 +84,6 @@ export class BaseModel<T extends Model> {
 
   // Find all documents with optional filter
   async find(filter: Partial<T> = {}): Promise<WithId<T>[]> {
-    console.log('this.db', this.db.databaseName, this.collection?.collectionName);
     return this.collection.find(filter as Filter<T>).toArray();
   }
 
