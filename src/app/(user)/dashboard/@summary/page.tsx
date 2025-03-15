@@ -1,86 +1,81 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowDownIcon, ArrowUpIcon, BarChart3, TrendingUp, Wallet, Calendar } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ArrowDown, ArrowUp, Percent, Wallet } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import { getRequest } from '@/lib/server-api';
 
-const Summary = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+function getPeriodText(period: string) {
+  switch (period) {
+    case 'today':
+      return 'day';
+    case 'week':
+      return 'week';
+    case 'month':
+      return 'month';
+    case 'quarter':
+      return 'quarter';
+    case '6months':
+      return '6 months';
+    case 'year':
+      return 'year';
+    default:
+      return '7 days';
+  }
+}
 
-  const portfolioData = {
-    totalValue: 1250000,
-    totalInvested: 1000000,
-    profitLoss: 250000,
-    profitLossPercentage: 25,
-    cashReserves: 150000,
-    portfolioGrowth: 3.2,
-    lastUpdated: new Date('2023-12-01T09:30:00'),
-  };
+const Summary = async ({ searchParams }: { searchParams: Promise<{ period: string }> }) => {
+  const { period } = await searchParams;
+  const overviewData = await getRequest('/dashboard/summary', { period });
+
+  const cards = [
+    {
+      title: 'Total Balance',
+      icon: Wallet,
+      value: overviewData.totalBalance,
+      change: overviewData.balanceChange,
+    },
+    {
+      title: 'Total Income',
+      icon: ArrowUp,
+      value: overviewData.totalIncome,
+      change: overviewData.incomeChange,
+    },
+    {
+      title: 'Total Expenses',
+      icon: ArrowDown,
+      value: overviewData.totalExpenses,
+      change: overviewData.expensesChange,
+      reverse: true,
+    },
+    {
+      title: 'Net Savings',
+      icon: Percent,
+      value: overviewData.netSavings,
+      change: overviewData.savingsChange,
+    },
+  ];
+
   return (
-    <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Portfolio Value</CardTitle>
-          <BarChart3 className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">₹{portfolioData.totalValue.toLocaleString()}</div>
-          <div className="flex items-center pt-1 text-xs text-muted-foreground">
-            <span>Invested: ₹{portfolioData.totalInvested.toLocaleString()}</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Returns</CardTitle>
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">₹{portfolioData.profitLoss.toLocaleString()}</div>
-          <div className="flex items-center pt-1">
-            <span
-              className={cn('text-xs', portfolioData.profitLossPercentage >= 0 ? 'text-green-500' : 'text-red-500')}
-            >
-              {portfolioData.profitLossPercentage >= 0 ? (
-                <ArrowUpIcon className="mr-1 h-3 w-3 inline" />
-              ) : (
-                <ArrowDownIcon className="mr-1 h-3 w-3 inline" />
-              )}
-              {Math.abs(portfolioData.profitLossPercentage)}%
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Cash Reserves</CardTitle>
-          <Wallet className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">₹{portfolioData.cashReserves.toLocaleString()}</div>
-          <div className="flex items-center pt-1 text-xs text-muted-foreground">
-            <span>Available for investment</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Portfolio Growth</CardTitle>
-          <Calendar className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div
-            className={cn('text-2xl font-bold', portfolioData.portfolioGrowth >= 0 ? 'text-green-500' : 'text-red-500')}
-          >
-            {portfolioData.portfolioGrowth >= 0 ? '+' : ''}
-            {portfolioData.portfolioGrowth}%
-          </div>
-          <div className="flex items-center pt-1 text-xs text-muted-foreground">
-            <span>Compared to last month</span>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+      {cards.map(card => (
+        <Card key={card.title}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
+            <card.icon className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatCurrency(card.value)}</div>
+            <p className="text-xs text-muted-foreground flex items-center gap-1 pt-1">
+              <span
+                className={`inline-flex items-center ${card.change >= 0 && !card.reverse ? 'text-green-500' : 'text-red-500'}`}
+              >
+                {card.change >= 0 ? <ArrowUp className="mr-1 h-3 w-3" /> : <ArrowDown className="mr-1 h-3 w-3" />}
+                {Math.abs(card.change)}%
+              </span>
+              from last {getPeriodText(period)}
+            </p>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 };

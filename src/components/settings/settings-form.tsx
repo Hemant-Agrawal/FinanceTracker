@@ -4,11 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/ui/switch';
-import { Input } from '@/ui/input';
 import { patchRequest } from '@/lib/api';
 
 const settingsFormSchema = z.object({
@@ -66,96 +64,52 @@ export function SettingsForm() {
             <FormField
               control={form.control}
               name="language"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Language</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="hi" disabled>
-                        Hindi (Coming Soon)
-                      </SelectItem>
-                      <SelectItem value="es" disabled>
-                        Spanish (Coming Soon)
-                      </SelectItem>
-                      <SelectItem value="fr" disabled>
-                        French (Coming Soon)
-                      </SelectItem>
-                      <SelectItem value="de" disabled>
-                        German (Coming Soon)
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>This will be used for displaying all text in the application.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="select"
+              label="Language"
+              placeholder="Select language"
+              options={[
+                { label: 'English', value: 'en' },
+                { label: 'Hindi', value: 'hi' },
+                { label: 'Spanish', value: 'es' },
+                { label: 'French', value: 'fr' },
+                { label: 'German', value: 'de' },
+              ]}
+              description="This will be used for displaying all text in the application."
             />
             <FormField
               control={form.control}
               name="currency"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Currency</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select currency" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="INR">Indian Rupee (₹)</SelectItem>
-                      <SelectItem value="USD">US Dollar ($)</SelectItem>
-                      <SelectItem value="EUR">Euro (€)</SelectItem>
-                      <SelectItem value="GBP">British Pound (£)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>This will be used for displaying all monetary values.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="select"
+              label="Currency"
+              placeholder="Select currency"
+              options={[
+                { label: 'Indian Rupee (₹)', value: 'INR' },
+                { label: 'US Dollar ($)', value: 'USD' },
+                { label: 'Euro (€)', value: 'EUR' },
+                { label: 'British Pound (£)', value: 'GBP' },
+              ]}
+              description="This will be used for displaying all monetary values."
             />
             <FormField
               control={form.control}
               name="dateFormat"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date Format</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select date format" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="DD/MM/YYYY">DD/MM/YYYY</SelectItem>
-                      <SelectItem value="MM/DD/YYYY">MM/DD/YYYY</SelectItem>
-                      <SelectItem value="YYYY-MM-DD">YYYY-MM-DD</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>This will be used for displaying all dates.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="select"
+              label="Date Format"
+              placeholder="Select date format"
+              options={[
+                { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
+                { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
+                { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
+              ]}
+              description="This will be used for displaying all dates."
             />
             <FormField
               control={form.control}
               name="monthlyBudget"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Monthly Budget</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="0.00" {...field} />
-                  </FormControl>
-                  <FormDescription>Set your monthly budget to track spending limits.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="number"
+              label="Monthly Budget"
+              description="Set your monthly budget to track spending limits."
+              placeholder="0.00"
             />
           </div>
           <div className="space-y-4">

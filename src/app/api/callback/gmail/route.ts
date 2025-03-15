@@ -8,7 +8,6 @@ export const GET = async function (req: Request) {
   //   const body = await req.json();
   const { searchParams } = new URL(req.url);
 
-  console.log(authUser, Object.fromEntries(searchParams.entries()));
   const user = await UserColl.updateById(authUser.user.id, { gmailToken: searchParams.get('code') as string });
   return NextResponse.json(user);
 };

@@ -5,9 +5,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Input } from '@/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
+import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
@@ -59,88 +57,38 @@ export function InvestmentTransactionForm() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Investment Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter investment name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="name" label="Investment Name" placeholder="Enter investment name" />
             <FormField
               control={form.control}
               name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Investment Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select investment type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Stock">Stock</SelectItem>
-                      <SelectItem value="Mutual Funds">Mutual Funds</SelectItem>
-                      <SelectItem value="ETF">ETF</SelectItem>
-                      <SelectItem value="Bond">Bond</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="select"
+              label="Investment Type"
+              placeholder="Select investment type"
+              options={[
+                { label: 'Stock', value: 'stock' },
+                { label: 'Mutual Funds', value: 'mutual-funds' },
+                { label: 'ETF', value: 'etf' },
+                { label: 'Bond', value: 'bond' },
+              ]}
             />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Enter amount" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormField control={form.control} name="amount" label="Amount" placeholder="Enter amount" />
             <FormField
               control={form.control}
               name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Transaction Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="date"
+              label="Transaction Date"
+              placeholder="Select transaction date"
             />
             <FormField
               control={form.control}
               name="transactionType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Transaction Type</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select transaction type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="buy">Buy</SelectItem>
-                      <SelectItem value="sell">Sell</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="select"
+              label="Transaction Type"
+              placeholder="Select transaction type"
+              options={[
+                { label: 'Buy', value: 'buy' },
+                { label: 'Sell', value: 'sell' },
+              ]}
             />
           </CardContent>
           <CardFooter>

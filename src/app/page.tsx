@@ -14,6 +14,7 @@ import {
   Globe,
   Smartphone,
 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HomePage() {
   return (
@@ -118,7 +119,7 @@ export default function HomePage() {
               </ul>
             </div>
             <div className="relative">
-              <img src="/placeholder.svg?height=600&width=800" alt="App Interface" className="rounded-lg shadow-2xl" />
+              <Image src="/placeholder.png" width={800} height={600} alt="App Interface" className="rounded-lg shadow-2xl" />
               <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent rounded-lg" />
             </div>
           </div>

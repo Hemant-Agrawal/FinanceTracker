@@ -2,7 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { CreditCard, Wallet, Building2, Landmark, PiggyBank, Banknote } from 'lucide-react';
 import { AccountType } from '@/config';
-
+import { ManipulateType } from 'dayjs';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,7 +64,6 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-
 export function getInvestmentTypeIcon(type: string) {
   switch (type) {
     case 'Stock':
@@ -81,5 +80,26 @@ export function getInvestmentTypeIcon(type: string) {
       return <Wallet className="h-4 w-4 mr-2 text-yellow-500" />;
     default:
       return <CreditCard className="h-4 w-4 mr-2 text-gray-500" />;
+  }
+}
+
+export function getPeriod(period: string): { dateUnit: ManipulateType; dateValue: number } {
+  switch (period) {
+    case 'today':
+      return { dateUnit: 'day', dateValue: 1 };
+    case '7days':
+      return { dateUnit: 'day', dateValue: 7 };
+    case 'week':
+      return { dateUnit: 'week', dateValue: 1 };
+    case 'month':
+      return { dateUnit: 'month', dateValue: 1 };
+    case 'quarter':
+      return { dateUnit: 'month', dateValue: 3 };
+    case '6months':
+      return { dateUnit: 'month', dateValue: 6 };
+    case 'year':
+      return { dateUnit: 'year', dateValue: 1 };
+    default:
+      return { dateUnit: 'day', dateValue: 7 };
   }
 }

@@ -25,7 +25,7 @@ export interface PaymentMethod {
 export interface Transaction extends Model {
   description: string;
   amount: number;
-  date: string;
+  date: Date;
   type: TransactionType;
   paymentMethod: PaymentMethod;
   tags: string[];
@@ -46,6 +46,27 @@ export class TransactionModel extends BaseModel<Transaction> {
     document.status = 'Completed';
     return super.insert(document, userId);
   }
+
+  async getTotalIncome(filter: Filter<Transaction>, userId: ObjectId | string) {
+    const totalIncome = await this.getCollection().find({
+      isDeleted: { $ne: true },
+      createdBy: new ObjectId(userId),
+      ...filter,
+      type: 'income',
+    }).toArray();
+    return totalIncome.reduce((acc, curr) => acc + curr.amount, 0);
+  }
+
+  async getTotalExpenses(filter: Filter<Transaction>, userId: ObjectId | string) {
+    const totalExpenses = await this.getCollection().find({
+      isDeleted: { $ne: true },
+      createdBy: new ObjectId(userId),
+      ...filter,
+      type: 'expense',
+    }).toArray();
+    return totalExpenses.reduce((acc, curr) => acc + curr.amount, 0);
+  }
+
 
   async list(filter?: Filter<Transaction>, limit = 10, skip = 0, sort = {}): Promise<WithId<Transaction>[]> {
     return this.getCollection()

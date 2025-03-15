@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Account } from '@/models/Account';
 import { formatDateWithTime } from '@/lib/date';
 import { Column, DataTable } from '../common/table';
+import { useRouter } from 'next/navigation';
 
 
 interface Props {
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function AccountsTable({ accounts, selectedAccounts, onSelectAccount, onSelectAll, onViewDetails }: Props) {
+  const router = useRouter();
   const columns: Column<Account>[] = [
     {
       key: 'name',
@@ -46,6 +48,7 @@ export function AccountsTable({ accounts, selectedAccounts, onSelectAccount, onS
     {
       key: 'type',
       label: 'Type',
+      sort: true,
       render: account => (
         <Badge className={getAccountTypeColor(account.type)} variant="outline">
           {getPaymentMethodIcon(account.type)}
@@ -74,6 +77,7 @@ export function AccountsTable({ accounts, selectedAccounts, onSelectAccount, onS
     {
       key: 'updatedAt',
       label: 'Last Updated On',
+      sort: true,
       render: account => formatDateWithTime(account.updatedAt!),
     },
   ];
@@ -90,12 +94,13 @@ export function AccountsTable({ accounts, selectedAccounts, onSelectAccount, onS
         {
           label: 'Edit',
           icon: <Edit />,
-          onClick: account => console.log(account),
+          onClick: account => router.push(`/accounts/${account._id}/edit`),
         },
         {
           label: 'Delete',
           icon: <Trash />,
-          onClick: account => console.log(account),
+          className: 'text-red-500',
+          onClick: account => router.push(`/accounts/${account._id}/delete`),
         },
       ]}
     />

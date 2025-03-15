@@ -22,7 +22,7 @@ const Modal = ({
 
   return (
     <Dialog open onOpenChange={onDismiss}>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{title}</span>

@@ -4,9 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/ui/button';
-import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
+import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
-import { Input } from '@/ui/input';
 import { patchRequest } from '@/lib/api';
 import { Mail } from 'lucide-react';
 
@@ -95,50 +94,14 @@ export function ProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           <div className="space-y-4">
-            <FormField
+            {/* <FormField
               control={form.control}
               name="avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar</FormLabel>
-                  <Input {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <Input {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <Input {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <Input {...field} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              
+            /> */}
+            <FormField control={form.control} name="name" label="Name" />
+            <FormField control={form.control} name="email" label="Email" />
+            <FormField control={form.control} name="phone" label="Phone" />
           </div>
           <div className="flex justify-end gap-2">
             {/* <Button type="reset" variant="outline">Cancel</Button> */}

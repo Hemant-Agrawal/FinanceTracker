@@ -40,6 +40,7 @@ export const POST = async function (req: Request) {
     name: paymentMethod.name,
     type: paymentMethod.type,
   };
+  body.date = new Date(body.date);
 
   const newTransaction = await TransactionColl.insert(body, authUser.user.id);
   if (newTransaction) {

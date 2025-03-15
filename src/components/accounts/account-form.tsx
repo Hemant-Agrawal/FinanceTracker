@@ -3,10 +3,6 @@
 import type React from 'react';
 
 import { Button } from '@/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/ui/form';
-import { Input } from '@/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select';
-import { Textarea } from '@/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -15,6 +11,7 @@ import { Account } from '@/models/Account';
 import { patchRequest, postRequest } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { AccountTypes } from '@/config';
+import { Form, FormField } from '../ui/form';
 
 const accountFormSchema = z.object({
   name: z.string().min(1, {
@@ -69,79 +66,38 @@ export function AccountForm({ account }: AccountFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Account Name</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. HDFC Bank" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
+        <FormField control={form.control} name="name" label="Account Name" placeholder="e.g. HDFC Bank" type="input" />
         <div className="grid grid-cols-3 gap-4">
           <FormField
             control={form.control}
             name="type"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Account Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {AccountTypes.map(type => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Account Type"
+            placeholder="Select type"
+            type="select"
+            options={AccountTypes.map(type => ({ label: type, value: type }))}
           />
           <FormField
             control={form.control}
             name="openingBalance"
-            render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormLabel>Opening Balance</FormLabel>
-                <FormControl>
-                  <Input type="number" placeholder="0.00" {...field} />
-                </FormControl>
-                <FormDescription>
-                  {isEdit
-                    ? 'Current balance will be set to this amount'
-                    : 'Initial balance when account was added'}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
+            label="Opening Balance"
+            placeholder="0.00"
+            type="number"
+            className="col-span-2"
+            description={
+              isEdit ? 'Current balance will be set to this amount' : 'Initial balance when account was added'
+            }
           />
         </div>
         <FormField
           control={form.control}
           name="details"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Account Details (Optional)</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Additional details about this account" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Account Details (Optional)"
+          placeholder="Additional details about this account"
+          type="textarea"
         />
-        <div>
-          <Button type="submit">{isEdit ? 'Save changes' : 'Add Account'}</Button>
+        <div className="flex justify-end pt-2">
+          <Button type="submit">{isEdit ? 'Save changes' : 'Create Account'}</Button>
         </div>
       </form>
     </Form>

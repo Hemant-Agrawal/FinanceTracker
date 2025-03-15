@@ -1,21 +1,27 @@
 'use client';
 
 import React from 'react';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartConfig } from '@/components/ui/chart';
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartConfig,
-} from '@/components/ui/chart';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+} from 'recharts';
 import { CurveType } from 'recharts/types/shape/Curve';
+import { cn } from '@/lib/utils';
 
 interface GenericChartProps {
   data: Record<string, unknown>[];
   type: 'line' | 'bar' | 'pie';
-  dataKeys: string[]; // Support multiple data keys
+  dataKeys: Array<string | { key: string; label?: string }>; // Support multiple data keys
   xAxisKey?: string;
   colors?: string[];
   showTooltip?: boolean;
@@ -27,6 +33,7 @@ interface GenericChartProps {
   pieInnerRadius?: number;
   pieOuterRadius?: number;
   config?: Record<string, unknown>;
+  className?: string;
 }
 
 const GenericChart: React.FC<GenericChartProps> = ({
@@ -44,7 +51,11 @@ const GenericChart: React.FC<GenericChartProps> = ({
   pieInnerRadius = 0,
   pieOuterRadius = 80,
   config = {},
+  className = '',
 }) => {
+  const dataKeysWithLabels = dataKeys.map(key =>
+    typeof key !== 'string' ? key : { key: key, label: key }
+  );
   const renderChart = () => {
     switch (type) {
       case 'line':
@@ -54,16 +65,17 @@ const GenericChart: React.FC<GenericChartProps> = ({
             <XAxis dataKey={xAxisKey} />
             <YAxis />
             {showTooltip && <ChartTooltip content={<ChartTooltipContent />} />}
-            {showLegend && <ChartLegend content={<ChartLegendContent />} />}
-            {dataKeys.map((key, index) => (
+            {dataKeysWithLabels.map(({ key, label }, index) => (
               <Line
                 key={key}
                 type={curveType}
                 dataKey={key}
+                name={label}
                 stroke={colors[index % colors.length]}
                 isAnimationActive={animation}
               />
             ))}
+            {showLegend && <ChartLegend />}
           </LineChart>
         );
       case 'bar':
@@ -73,38 +85,40 @@ const GenericChart: React.FC<GenericChartProps> = ({
             <XAxis dataKey={xAxisKey} />
             <YAxis />
             {showTooltip && <ChartTooltip content={<ChartTooltipContent />} />}
-            {showLegend && <ChartLegend content={<ChartLegendContent />} />}
-            {dataKeys.map((key, index) => (
-              <Bar key={key} dataKey={key} fill={colors[index % colors.length]} isAnimationActive={animation} />
+            {dataKeysWithLabels.map(({ key, label }, index) => (
+              <Bar key={key} dataKey={key} fill={colors[index % colors.length]} name={label} isAnimationActive={animation} />
             ))}
+            {showLegend && <ChartLegend />}
           </BarChart>
         );
       case 'pie':
         return (
           <PieChart>
             {showTooltip && <ChartTooltip content={<ChartTooltipContent />} />}
-            {showLegend && <ChartLegend content={<ChartLegendContent />} />}
             <Pie
               data={data}
-              dataKey={dataKeys[0]}
+              dataKey={dataKeysWithLabels[0].key}
               nameKey={xAxisKey}
               innerRadius={pieInnerRadius}
               outerRadius={pieOuterRadius}
               fill={colors[0]}
-              label
+              label={({ name, percent }) => ` ${name}: ${(percent * 100).toFixed(0)}% `}
             >
               {data.map((_, index) => (
                 <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
               ))}
             </Pie>
+            {showLegend && <ChartLegend />}
           </PieChart>
         );
-      }
-    };
-    
-    return (
-      <ChartContainer config={config as ChartConfig} className="w-full h-full">
-      {renderChart()}
+    }
+  };
+
+  return (
+    <ChartContainer config={config as ChartConfig} className={cn('w-full h-full', className)}>
+      <ResponsiveContainer width="100%" height="100%">
+        {renderChart()}
+      </ResponsiveContainer>
     </ChartContainer>
   );
 };

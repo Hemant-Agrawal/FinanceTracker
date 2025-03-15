@@ -33,6 +33,9 @@ export const POST = async function (req: NextRequest) {
   if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const body = await req.json();
 
-  const newAccount = await AccountColl.insert({ ...body, currentBalance: +body.openingBalance }, authUser.user.id);
+  const newAccount = await AccountColl.insert(
+    { ...body, currentBalance: +body.openingBalance, openingBalance: +body.openingBalance },
+    authUser.user.id
+  );
   return NextResponse.json(newAccount, { status: 201 });
 };

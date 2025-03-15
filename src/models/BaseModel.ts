@@ -46,7 +46,7 @@ export class BaseModel<T extends Model> {
   private async init() {
     this.client = await connectClient();
     this.db = this.client.db();
-
+    
     this.collection = this.db.collection<T>(this.collectionName);
   }
 
@@ -83,12 +83,12 @@ export class BaseModel<T extends Model> {
   }
 
   // Find all documents with optional filter
-  async find(filter: Partial<T> = {}): Promise<WithId<T>[]> {
+  async find(filter: Filter<T> = {}): Promise<WithId<T>[]> {
     return this.collection.find(filter as Filter<T>).toArray();
   }
 
   // Update a document by ID
-  async updateById(id: string, updatedData: Partial<T>, userId?: ObjectId): Promise<boolean> {
+  async updateById(id: string | ObjectId, updatedData: Partial<T>, userId?: ObjectId): Promise<boolean> {
     updatedData.updatedAt = new Date();
     if (userId) {
       updatedData.updatedBy = userId;

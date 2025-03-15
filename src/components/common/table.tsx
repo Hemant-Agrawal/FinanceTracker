@@ -26,6 +26,7 @@ interface Action<T> {
   label: string;
   icon: React.ReactNode;
   onClick: (row: T) => void;
+  className?: string;
 }
 
 interface DataTableProps<T> {
@@ -127,7 +128,7 @@ export function DataTable<T>({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       {allActions.map(action => (
-                        <DropdownMenuItem key={action.label} onClick={() => action.onClick(row)}>
+                        <DropdownMenuItem className={action.className}  key={action.label} onClick={() => action.onClick(row)}>
                           {action.icon}
                           {action.label}
                         </DropdownMenuItem>
