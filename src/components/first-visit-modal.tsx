@@ -31,7 +31,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function FirstVisitModal() {
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
   const router = useRouter();
 
   const form = useForm<FormValues>({
@@ -49,6 +49,13 @@ export function FirstVisitModal() {
     toast({
       title: 'Profile information saved',
       description: 'Thank you for providing your details!',
+    });
+    update({
+      ...session,
+      user: {
+        ...session?.user,
+        ...data,
+      },
     });
     router.refresh();
   }
