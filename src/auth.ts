@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import Nodemailer from 'next-auth/providers/nodemailer';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
 import clientPromise from '@/lib/db';
+import { sendVerificationRequest } from './email';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(clientPromise, {
@@ -13,13 +14,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Nodemailer({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
+        port: Number(process.env.EMAIL_SERVER_PORT),
         auth: {
           user: process.env.EMAIL_SERVER_USER,
           pass: process.env.EMAIL_SERVER_PASSWORD,
         },
       },
       from: process.env.EMAIL_FROM,
+      sendVerificationRequest,
     }),
   ],
   session: { strategy: 'jwt' },
@@ -46,9 +48,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async jwt({ token }) {
       // console.log('jwt', { token, user, account, profile, isNewUser });
-        // if (user) {
-        //   token.id = user.id;
-        // }
+      // if (user) {
+      //   token.id = user.id;
+      // }
       return token;
     },
     authorized: async ({ auth }) => {

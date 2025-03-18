@@ -8,13 +8,16 @@ import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/ui/card';
 import { toast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setIsLoading(true);
     try {
       const result = await signIn('nodemailer', { email, redirectTo: '/dashboard' });
 
@@ -32,6 +35,8 @@ export default function SignIn() {
         description: 'An error occurred during sign in.',
         variant: 'destructive',
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,14 +58,15 @@ export default function SignIn() {
                 type="email"
                 placeholder="name@example.com"
                 value={email}
+                disabled={isLoading}
                 onChange={e => setEmail(e.target.value)}
                 required
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button className="w-full" type="submit">
-              Continue with Email
+            <Button className="w-full" type="submit" disabled={!email || isLoading}>
+              {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : 'Continue with Email'}
             </Button>
           </CardFooter>
         </form>

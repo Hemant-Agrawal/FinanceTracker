@@ -20,7 +20,7 @@ interface MagicLinkEmailProps {
 }
 
 export const MagicLinkEmail = ({ magicLink, name = '', isNewUser = false }: MagicLinkEmailProps) => {
-  const previewText = isNewUser ? 'Welcome to Budget App! Verify your email to get started' : 'Sign in to Budget App';
+  const previewText = isNewUser ? 'Welcome to Finance Tracker! Verify your email to get started' : 'Sign in to Finance Tracker';
 
   return (
     <Html>
@@ -30,12 +30,12 @@ export const MagicLinkEmail = ({ magicLink, name = '', isNewUser = false }: Magi
         <Body className="bg-gray-100 font-sans">
           <Container className="mx-auto my-10 max-w-[500px] rounded bg-white p-10">
             <Heading className="text-center text-xl font-bold text-gray-900">
-              {isNewUser ? 'Welcome to Budget App!' : 'Sign in to Budget App'}
+              {isNewUser ? 'Welcome to Finance Tracker!' : 'Sign in to Finance Tracker'}
             </Heading>
 
             {isNewUser ? (
               <Text className="text-gray-600">
-                Hi {name}, thanks for creating an account with Budget App. Click the button below to verify your email
+                Hi {name}, thanks for creating an account with Finance Tracker. Click the button below to verify your email
                 address and get started.
               </Text>
             ) : (
@@ -46,7 +46,7 @@ export const MagicLinkEmail = ({ magicLink, name = '', isNewUser = false }: Magi
 
             <Section className="text-center">
               <Button
-                className="rounded bg-primary px-6 py-3 text-center text-sm font-medium text-white"
+                className="rounded bg-primary px-6 py-3 text-center text-sm font-medium"
                 href={magicLink}
               >
                 {isNewUser ? 'Verify Email & Sign In' : 'Sign In'}
