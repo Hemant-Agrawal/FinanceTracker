@@ -7,7 +7,6 @@ import { Button } from '@/ui/button';
 import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { patchRequest } from '@/lib/api';
-import { Mail } from 'lucide-react';
 import { User } from '@/models/User';
 
 const profileFormSchema = z.object({

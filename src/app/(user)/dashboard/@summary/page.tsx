@@ -22,9 +22,20 @@ function getPeriodText(period: string) {
   }
 }
 
+type OverviewData = {
+  totalBalance: number;
+  balanceChange: number;
+  totalIncome: number;
+  incomeChange: number;
+  totalExpenses: number;
+  expensesChange: number;
+  netSavings: number;
+  savingsChange: number;
+};
+
 const Summary = async ({ searchParams }: { searchParams: Promise<{ period: string }> }) => {
   const { period } = await searchParams;
-  const overviewData = await getRequest('/dashboard/summary', { period });
+  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period });
 
   const cards = [
     {

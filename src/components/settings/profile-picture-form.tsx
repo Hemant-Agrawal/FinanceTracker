@@ -11,7 +11,7 @@ import {
 } from '@/ui/dialog';
 import { Button } from '@/ui/button';
 import { Slider } from '@/ui/slider';
-import { Check, Move, RefreshCw, RotateCcw, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
+import { Check, Move, RotateCcw, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
 import { User } from '@/models/User';
 import { patchRequest } from '@/lib/api';
 import { useTouchGestures } from '@/hooks/use-touch-gestures';

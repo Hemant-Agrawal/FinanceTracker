@@ -1,4 +1,4 @@
-import { Filter, ObjectId, OptionalUnlessRequiredId, WithId } from 'mongodb';
+import { Filter, ObjectId, WithId } from 'mongodb';
 import { BaseModel, Model } from './BaseModel';
 
 export interface EmailRecords extends Model {

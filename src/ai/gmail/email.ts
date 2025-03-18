@@ -1,4 +1,4 @@
-import { EmailRecordsColl, UserColl } from '@/models';
+import { UserColl } from '@/models';
 import dayjs from 'dayjs';
 import { google } from 'googleapis';
 

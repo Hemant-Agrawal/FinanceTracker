@@ -1,7 +1,5 @@
 'use client';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/lib/utils';
 import { Column, DataTable } from '@/common/table';
 import { formatDate } from '@/lib/date';

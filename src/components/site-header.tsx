@@ -12,7 +12,6 @@ import {
   ChevronDown,
   Users,
   Gift,
-  User,
   ArrowRight,
   LogOut,
   CandlestickChart,

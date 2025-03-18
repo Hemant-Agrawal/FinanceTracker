@@ -1,6 +1,5 @@
 import { ClientSession, ObjectId, Filter } from 'mongodb';
 import { BaseModel, Model } from './BaseModel';
-import { AccountType } from '@/config';
 
 export interface Loan extends Model {
   name: string;

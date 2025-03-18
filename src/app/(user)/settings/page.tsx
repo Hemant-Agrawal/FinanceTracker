@@ -4,7 +4,7 @@ import ProfilePictureForm from '@/components/settings/profile-picture-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getRequest } from '@/lib/server-api';
-import { Camera, Link, Mail, Settings, Settings2 } from 'lucide-react';
+import { Camera, Link, Mail, Settings } from 'lucide-react';
 import UserAvatar from '@/components/common/user-avatar';
 import { User } from '@/models/User';
 

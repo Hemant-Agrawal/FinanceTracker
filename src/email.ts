@@ -1,11 +1,10 @@
 import { createTransport } from 'nodemailer';
 import { MagicLinkEmail } from './components/email/signin';
 import { render } from '@react-email/components';
+import { NodemailerConfig } from 'next-auth/providers/nodemailer';
 
-export async function sendVerificationRequest(params: { identifier: string; url: string; provider: any }) {
+export async function sendVerificationRequest(params: { identifier: string; url: string; provider: NodemailerConfig }) {
   const { identifier, url, provider } = params;
-  const { host } = new URL(url);
-  // NOTE: You are not required to use `nodemailer`, use whatever you want.
   const transport = createTransport(provider.server);
   const emailHtml = await render(MagicLinkEmail({ magicLink: url }));
 
@@ -13,7 +12,7 @@ export async function sendVerificationRequest(params: { identifier: string; url:
     to: identifier,
     from: provider.from,
     subject: `Sign in to Finance Tracker`,
-    text: text({ url, host }),
+    text: text({ url }),
     html: emailHtml,
   });
   const failed = result.rejected.filter(Boolean);
@@ -23,6 +22,6 @@ export async function sendVerificationRequest(params: { identifier: string; url:
 }
 
 // Email Text body (fallback for email clients that don't render HTML, e.g. feature phones)
-function text({ url, host }: { url: string; host: string }) {
+function text({ url }: { url: string }) {
   return `Sign in to Finance Tracker\n${url}\n\n`;
 }

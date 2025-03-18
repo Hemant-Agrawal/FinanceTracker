@@ -7,7 +7,6 @@ import { formatCurrency, getStatusColor } from '@/lib/utils';
 import { formatDate } from '@/lib/date';
 import { Transaction } from '@/models/Transaction';
 import HistoryCard from '../common/history';
-import Link from 'next/link';
 
 interface TransactionDetailsProps {
   transaction: Transaction;
