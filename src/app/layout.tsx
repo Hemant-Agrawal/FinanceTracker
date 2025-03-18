@@ -1,7 +1,7 @@
 import type React from 'react';
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -9,8 +9,9 @@ import { Toaster } from '@/ui/toaster';
 import { FloatingActionButton } from '@/components/common/floating-button';
 import Providers from './providers';
 import { auth } from '@/auth';
+import { FirstVisitModal } from '@/components/first-visit-modal';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -28,13 +29,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body>
         <Providers session={session}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             <div className="relative flex min-h-screen flex-col">
-              <SiteHeader session={session} />
+              <SiteHeader />
               <main className="flex-1 w-full max-w-full overflow-x-hidden">
-                {children}
+                {session && !session.user?.name ? <FirstVisitModal /> : children}
                 <FloatingActionButton />
               </main>
               <SiteFooter />

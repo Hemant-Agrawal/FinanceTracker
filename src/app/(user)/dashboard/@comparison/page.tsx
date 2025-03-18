@@ -4,7 +4,7 @@ import { getRequest } from '@/lib/server-api';
 
 export default async function ComparisonChart({ searchParams }: { searchParams: Promise<{ period: string }> }) {
   const { period } = await searchParams;
-  const data = await getRequest('/dashboard/comparison', { period });
+  const data = await getRequest<Record<string, string | number>[]>('/dashboard/comparison', { period });
 
   return (
     <Card>

@@ -13,9 +13,10 @@ interface UserAvatarProps {
 const UserAvatar = ({ user, children, className, size = 40 }: UserAvatarProps) => {
   const delimiter = 64 / size;
   const [x, y] = [(user.avatar?.position.x ?? 0) / delimiter, (user.avatar?.position.y ?? 0) / delimiter];
+  const sizeClass = size === 40 ? 'h-40 w-40' : 'h-8 w-8';
 
   return (
-    <Avatar className={cn(`h-${size} w-${size} relative group mb-4`, className)}>
+    <Avatar className={cn(`relative group mb-4`, sizeClass, className)}>
       <AvatarImage
         src={user.avatar?.url}
         alt={user.name ?? user.email}

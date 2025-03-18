@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import { UserColl } from '@/models';
 import { NextResponse } from 'next/server';
-import { getAccessToken } from '@/ai/gmail/token';
+import { getAccessToken } from '@/ai/gmail/email';
 
 export const GET = async function (req: Request) {
   const authUser = await auth();

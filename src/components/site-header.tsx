@@ -21,14 +21,9 @@ import { cn, getInitial } from '@/lib/utils';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/ui/sheet';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar';
-import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 
 type NavChild = {
@@ -60,15 +55,18 @@ const navItems: NavItem[] = [
   // },
 ];
 
-export function SiteHeader({ session }: { session: Session | null }) {
+export function SiteHeader() {
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const isAuthenticated = Boolean(session?.user);
+  const isAuthenticated = status === 'authenticated';
+  const isUserInfoSaved = !!session?.user?.name;
 
   const NavContent = () => (
     <>
       {isAuthenticated &&
+        isUserInfoSaved &&
         navItems.map(item => {
           if (item.children) {
             return (
