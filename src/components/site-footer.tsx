@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5" />
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Expense Tracker. All rights reserved.
+            © {new Date().getFullYear()} Finance Tracker. All rights reserved.
           </p>
         </div>
       </div>

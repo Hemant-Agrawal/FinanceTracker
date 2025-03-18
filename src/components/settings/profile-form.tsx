@@ -8,9 +8,9 @@ import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { patchRequest } from '@/lib/api';
 import { Mail } from 'lucide-react';
+import { User } from '@/models/User';
 
 const profileFormSchema = z.object({
-  avatar: z.string().optional(),
   name: z.string({
     required_error: 'Name is required.',
   }),
@@ -19,23 +19,21 @@ const profileFormSchema = z.object({
   }),
   phone: z.string().optional(),
   gmailToken: z.string().optional(),
+  currency: z.string().optional(),
+  dateFormat: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-// This simulates a database record
-const defaultValues: Partial<ProfileFormValues> = {
-  avatar: '',
-  name: '',
-  email: '',
-  phone: '',
-  gmailToken: '',
-};
-
-export function ProfileForm() {
+export function ProfileForm({ user }: { user: User }) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+      // phone: user.phone,
+      // gmailToken: user.gmailToken,
+    },
   });
 
   function onSubmit(data: ProfileFormValues) {
@@ -54,63 +52,45 @@ export function ProfileForm() {
       });
   }
 
-  const openGitHubAppModal = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.set('access_type', 'offline');
-    authUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/gmail.readonly');
-    authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('client_id', process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '');
-    authUrl.searchParams.set('redirect_uri', process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI || '');
-    const modalWidth = 600;
-    const modalHeight = 700;
-    const modalLeft = (window.innerWidth - modalWidth) / 2;
-    const modalTop = (window.innerHeight - modalHeight) / 2;
-
-    // Open a popup window for GitHub App installation
-    const popup = window.open(
-      authUrl,
-      'InstallGmailApp',
-      `width=${modalWidth},height=${modalHeight},left=${modalLeft},top=${modalTop}`
-    );
-
-    if (popup) {
-      // Monitor the popup window for completion
-      const checkPopup = setInterval(async () => {
-        if (popup.closed) {
-          clearInterval(checkPopup); // Stop checking if the popup is closed
-          console.log('Gmail App installation window closed');
-        }
-      }, 500);
-
-      // Listen for messages from the popup
-    } else {
-      console.error('Failed to open the popup window.');
-    }
-  };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-6">
-          <div className="space-y-4">
-            {/* <FormField
-              control={form.control}
-              name="avatar"
-              
-            /> */}
-            <FormField control={form.control} name="name" label="Name" />
-            <FormField control={form.control} name="email" label="Email" />
-            <FormField control={form.control} name="phone" label="Phone" />
-          </div>
-          <div className="flex justify-end gap-2">
-            {/* <Button type="reset" variant="outline">Cancel</Button> */}
-            <Button type="button" variant="outline" onClick={openGitHubAppModal}>
-              <Mail className="h-4 w-4" />
-              Connect Gmail
-            </Button>
-            <Button type="submit">Save Changes</Button>
-          </div>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <FormField control={form.control} name="name" label="Name" />
+        <FormField control={form.control} name="email" label="Email" />
+        <FormField control={form.control} name="phone" label="Phone" />
+        <FormField
+          control={form.control}
+          name="currency"
+          type="select"
+          label="Currency"
+          placeholder="Select currency"
+          options={[
+            { label: 'Indian Rupee (₹)', value: 'INR' },
+            { label: 'US Dollar ($)', value: 'USD' },
+            { label: 'Euro (€)', value: 'EUR' },
+            { label: 'British Pound (£)', value: 'GBP' },
+          ]}
+          // description="This will be used for displaying all monetary values."
+        />
+        <FormField
+          control={form.control}
+          name="dateFormat"
+          type="select"
+          label="Date Format"
+          placeholder="Select date format"
+          options={[
+            { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
+            { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
+            { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
+          ]}
+          // description="This will be used for displaying all dates."
+        />
+
+        <div className="flex justify-end gap-2 pt-4">
+          {/* <Button type="reset" variant="outline" disabled>
+            Reset
+          </Button> */}
+          <Button type="submit">Save Changes</Button>
         </div>
       </form>
     </Form>

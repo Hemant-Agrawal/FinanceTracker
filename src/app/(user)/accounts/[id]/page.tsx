@@ -10,7 +10,7 @@ import Link from 'next/link';
 import Transactions from '@/components/transactions';
 
 export const metadata: Metadata = {
-  title: 'Account Details | Expense Tracker',
+  title: 'Account Details | Finance Tracker',
   description: 'View and manage your account details',
 };
 

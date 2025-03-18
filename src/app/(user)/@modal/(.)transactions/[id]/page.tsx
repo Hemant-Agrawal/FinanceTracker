@@ -1,15 +1,16 @@
 import Modal from '@/app/(user)/@modal/modal';
-// import { DeleteTransactionModal } from '@/components/transactions/delete-transaction-modal';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
 import { getTransactionById } from '@/lib/server-api';
 import Link from 'next/link';
+import { TransactionDetails } from '@/components/transactions/transaction-details';
+import { notFound } from 'next/navigation';
 
 export default async function TransactionModal({ params }: { params: Promise<{ id: string }> }) {
   const photoId = (await params).id;
 
   const transaction = await getTransactionById(photoId);
-  console.log(transaction);
+  if (!transaction) return notFound();
 
   const actions = [
     <Link key="edit" href={`/transactions/${photoId}/edit`}>
@@ -26,9 +27,8 @@ export default async function TransactionModal({ params }: { params: Promise<{ i
     </Link>,
   ];
   return (
-    <Modal title="Transaction Details" description="Add a new financial account to track your balance." actions={actions}>
-      {/* <TransactionDetails transaction={transaction} /> */}
-      <></>
+    <Modal title="Transaction Details" description="View and manage transaction details." actions={actions} className="w-full max-w-2xl">
+      <TransactionDetails transaction={transaction} />
     </Modal>
   );
 }

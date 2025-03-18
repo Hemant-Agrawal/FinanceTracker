@@ -75,15 +75,15 @@ export function DateRangePicker({ onChange, value }: DateRangeInputProps) {
             selected={value}
             onSelect={onChange}
             numberOfMonths={1}
-            modifiers={{
-              today: new Date(),
-            }}
-            modifiersStyles={{
-              today: {
-                fontWeight: 'bold',
-                color: 'var(--primary)',
-              },
-            }}
+            // modifiers={{
+            //   today: new Date(),
+            // }}
+            // modifiersStyles={{
+            //   today: {
+            //     fontWeight: 'bold',
+            //     color: 'var(--primary)',
+            //   },
+            // }}
           />
           <div className="border-l p-1 space-y-1 w-auto max-w-min">
             {presets.map(preset => (

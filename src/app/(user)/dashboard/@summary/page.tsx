@@ -69,7 +69,7 @@ const Summary = async ({ searchParams }: { searchParams: Promise<{ period: strin
                 className={`inline-flex items-center ${card.change >= 0 && !card.reverse ? 'text-green-500' : 'text-red-500'}`}
               >
                 {card.change >= 0 ? <ArrowUp className="mr-1 h-3 w-3" /> : <ArrowDown className="mr-1 h-3 w-3" />}
-                {Math.abs(card.change)}%
+                {Math.abs(card.change).toFixed(2)}%
               </span>
               from last {getPeriodText(period)}
             </p>

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { List } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | Expense Tracker',
+  title: 'Dashboard | Finance Tracker',
   description: 'Monitor your financial activities and track your expenses',
 };
 

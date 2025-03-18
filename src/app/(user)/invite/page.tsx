@@ -27,7 +27,7 @@ export default function InviteUserPage() {
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle>Invite a User</CardTitle>
-          <CardDescription>Send an invitation to join your Expense Tracker team</CardDescription>
+          <CardDescription>Send an invitation to join your Finance Tracker team</CardDescription>
         </CardHeader>
         <form onSubmit={handleInvite}>
           <CardContent>

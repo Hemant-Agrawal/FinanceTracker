@@ -8,7 +8,7 @@ import Accounts from '@/components/accounts';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Accounts | Expense Tracker',
+  title: 'Accounts | Finance Tracker',
   description: 'Manage your financial accounts',
 };
 

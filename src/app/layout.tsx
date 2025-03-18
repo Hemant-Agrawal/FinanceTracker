@@ -14,10 +14,10 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
-    default: 'Expense Tracker',
-    template: '%s | Expense Tracker',
+    default: 'Finance Tracker',
+    template: '%s | Finance Tracker',
   },
-  description: 'A comprehensive expense tracker application',
+  description: 'A comprehensive Finance Tracker application',
   icons: {
     icon: '/favicon.ico',
   },

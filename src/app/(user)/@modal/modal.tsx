@@ -8,11 +8,13 @@ const Modal = ({
   title,
   description,
   actions = [],
+  className,
 }: {
   children: React.ReactNode;
   title: React.ReactNode;
   description: React.ReactNode;
   actions?: React.ReactNode[];
+  className?: string;
 }) => {
   const router = useRouter();
 
@@ -22,7 +24,7 @@ const Modal = ({
 
   return (
     <Dialog open onOpenChange={onDismiss}>
-      <DialogContent>
+      <DialogContent className={className}>
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
             <span>{title}</span>

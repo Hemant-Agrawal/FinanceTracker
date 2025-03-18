@@ -27,21 +27,21 @@ export async function apiRequest(endpoint: string, method = 'GET', data: Record<
   return res.json();
 }
 
-export async function getRequest(endpoint: string, params = {}) {
+export async function getRequest<T>(endpoint: string, params = {}): Promise<T> {
   return apiRequest(endpoint, 'GET', params);
 }
 
-export async function postRequest(endpoint: string, data = {}) {
-  return apiRequest(endpoint, 'POST', data);
-}
+// export async function postRequest(endpoint: string, data = {}) {
+//   return apiRequest(endpoint, 'POST', data);
+// }
 
-export async function deleteRequest(endpoint: string) {
-  return apiRequest(endpoint, 'DELETE');
-}
+// export async function deleteRequest(endpoint: string) {
+//   return apiRequest(endpoint, 'DELETE');
+// }
 
-export async function patchRequest(endpoint: string, data = {}) {
-  return apiRequest(endpoint, 'PATCH', data);
-}
+// export async function patchRequest(endpoint: string, data = {}) {
+//   return apiRequest(endpoint, 'PATCH', data);
+// }
 
 export async function fetchAccounts(params = {}): Promise<PaginatedResult<WithId<Account>>> {
   return getRequest('/accounts', params);

@@ -17,7 +17,7 @@ import {
   LogOut,
   CandlestickChart,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, getInitial } from '@/lib/utils';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/ui/sheet';
@@ -27,7 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 
@@ -59,15 +59,6 @@ const navItems: NavItem[] = [
   //   ],
   // },
 ];
-
-function getInitial(name: string | null | undefined): string {
-  if (!name) return '?';
-  const parts = name.split(' ');
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return name.charAt(0).toUpperCase();
-}
 
 export function SiteHeader({ session }: { session: Session | null }) {
   const pathname = usePathname();
@@ -149,7 +140,7 @@ export function SiteHeader({ session }: { session: Session | null }) {
         <div className="mr-4 flex">
           <Link href={isAuthenticated ? '/dashboard' : '/'} className="mr-6 flex items-center space-x-2">
             <BarChart3 className="h-6 w-6" />
-            <span className="font-bold inline-block">Expense Tracker</span>
+            <span className="font-bold inline-block">Finance Tracker</span>
           </Link>
           <nav className="items-center space-x-6 text-sm font-medium hidden sm:flex">
             <NavContent />
@@ -163,18 +154,12 @@ export function SiteHeader({ session }: { session: Session | null }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      {/* <AvatarImage src="/avatars/01.png" alt="@hemant" /> */}
+                      <AvatarImage src={session?.user?.image ?? ''} alt={session?.user?.name ?? ''} />
                       <AvatarFallback>{getInitial(session?.user?.name ?? session?.user?.email)}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" forceMount>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings/profile">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/referral">
                       <Gift className="mr-2 h-4 w-4" />

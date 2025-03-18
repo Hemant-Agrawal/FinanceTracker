@@ -3,18 +3,18 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 dayjs.extend(customParseFormat);
 
-export function formatDate(dateString: string | Date): string {
-  return dayjs(dateString).format('DD-MM-YYYY');
+export function formatDate(dateString: string | Date, format: string = 'DD-MM-YYYY'): string {
+  return dayjs(dateString).format(format);
 }
 
-export function formatTime(dateString: string | Date): string {
-  return dayjs(dateString).format('hh:mm:ss A');
+export function formatTime(dateString: string | Date, format: string = 'hh:mm:ss A'): string {
+  return dayjs(dateString).format(format);
 }
 
-export function formatDateWithTime(dateString: string | Date): string {
-  return dayjs(dateString).format('DD-MM-YYYY hh:mm:ss A');
+export function formatDateWithTime(dateString: string | Date, format: string = 'DD-MM-YYYY hh:mm:ss A'): string {
+  return dayjs(dateString).format(format);
 }
 
-export function convertDate(dateString: string): Date {
-  return dayjs(dateString, 'DD-MM-YYYY').toDate();
+export function convertDate(dateString: string, format: string = 'DD-MM-YYYY'): Date {
+  return dayjs(dateString, format).toDate();
 }

@@ -22,8 +22,8 @@ export default function ReferralPage() {
     if (navigator.share) {
       navigator
         .share({
-          title: 'Join Expense Tracker',
-          text: `Use my referral code ${referralCode} to sign up for Expense Tracker!`,
+          title: 'Join Finance Tracker',
+          text: `Use my referral code ${referralCode} to sign up for Finance Tracker!`,
           url: 'https://your-expense-tracker-url.com',
         })
         .then(() => {
@@ -41,7 +41,7 @@ export default function ReferralPage() {
       <Card className="max-w-md mx-auto">
         <CardHeader>
           <CardTitle>Refer a Friend</CardTitle>
-          <CardDescription>Share Expense Tracker and earn rewards</CardDescription>
+          <CardDescription>Share Finance Tracker and earn rewards</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>

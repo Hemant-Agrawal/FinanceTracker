@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Account Details | Expense Tracker',
+  title: 'Account Details | Finance Tracker',
   description: 'View and manage your account details',
 };
 
