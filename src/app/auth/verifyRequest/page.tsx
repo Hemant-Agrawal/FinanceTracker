@@ -1,13 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/ui/button';
-import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import { Loader2, CheckCircle2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function VerifyPage() {
-  const router = useRouter();
-  const [verificationStatus] = useState<'pending' | 'success' | 'error'>('pending');
+  const { push } = useRouter();
+  const { status } = useSession();
 
   const openGmail = () => {
     const gmailUrl = 'https://mail.google.com/';
@@ -15,19 +16,33 @@ export default function VerifyPage() {
 
     if (gmailWindow) {
       const checkVerification = setInterval(() => {
-        if (verificationStatus === 'success') {
+        if (status === 'authenticated') {
           clearInterval(checkVerification);
           gmailWindow.close();
-          router.push('/dashboard');
+          push('/dashboard');
         }
       }, 1000);
     }
   };
 
+  useEffect(() => {
+    if (status === 'authenticated') {
+      push('/dashboard');
+    }
+  }, [status, push]);
+
   return (
     <div className="container flex h-screen w-screen flex-col items-center justify-center">
       <div className="mx-auto flex w-full flex-col items-center justify-center space-y-6 sm:w-[350px]">
-        {verificationStatus === 'pending' && (
+        {status === 'authenticated' ? (
+          <>
+            <CheckCircle2 className="h-16 w-16 text-green-500" />
+            <h1 className="text-2xl font-semibold tracking-tight">Verification successful!</h1>
+            <p className="text-center text-sm text-muted-foreground">
+              Great news! You&apos;re verified. We&apos;re redirecting you to the dashboard...
+            </p>
+          </>
+        ) : (
           <>
             <Loader2 className="h-16 w-16 animate-spin text-primary" />
             <h1 className="text-2xl font-semibold tracking-tight">Verifying your magic link...</h1>
@@ -36,27 +51,11 @@ export default function VerifyPage() {
             </p>
           </>
         )}
-        {verificationStatus === 'success' && (
-          <>
-            <CheckCircle2 className="h-16 w-16 text-green-500" />
-            <h1 className="text-2xl font-semibold tracking-tight">Verification successful!</h1>
-            <p className="text-center text-sm text-muted-foreground">
-              Great news! You&apos;re verified. We&apos;re redirecting you to the dashboard...
-            </p>
-          </>
+        {status !== 'authenticated' && (
+          <Button onClick={openGmail} className="mt-4">
+            Open Gmail
+          </Button>
         )}
-        {verificationStatus === 'error' && (
-          <>
-            <XCircle className="h-16 w-16 text-red-500" />
-            <h1 className="text-2xl font-semibold tracking-tight">Oops! Verification failed</h1>
-            <p className="text-center text-sm text-muted-foreground">
-              Something went wrong. Please try again or contact support.
-            </p>
-          </>
-        )}
-        <Button onClick={openGmail} className="mt-4">
-          Open Gmail
-        </Button>
       </div>
     </div>
   );

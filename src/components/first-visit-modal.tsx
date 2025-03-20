@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -31,6 +32,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function FirstVisitModal() {
+  const [isOpen, setIsOpen] = useState(true);
   const { data: session, update } = useSession();
   const router = useRouter();
 
@@ -58,10 +60,11 @@ export function FirstVisitModal() {
       },
     });
     router.refresh();
+    setIsOpen(false);
   }
 
   return (
-    <Dialog open={true} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Welcome to Finance Tracker</DialogTitle>

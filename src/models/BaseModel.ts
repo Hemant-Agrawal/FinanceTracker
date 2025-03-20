@@ -3,6 +3,7 @@ import {
   Collection,
   Db,
   Filter,
+  GridFSBucket,
   MongoClient,
   ObjectId,
   OptionalUnlessRequiredId,
@@ -36,22 +37,45 @@ export class BaseModel<T extends Model> {
   private collectionName: string;
   private db!: Db;
   private client!: MongoClient;
+  private bucket!: GridFSBucket;
   private collection!: Collection<T>;
 
-  constructor(collectionName: string) {
+  constructor(collectionName: string, bucketName: string = 'attachments') {
     this.collectionName = collectionName;
-    this.init();
+    this.init(bucketName);
   }
 
-  private async init() {
+  private async init(bucketName: string) {
     this.client = await connectClient();
     this.db = this.client.db();
-    
+    if (bucketName) {
+      this.bucket = new GridFSBucket(this.db, { bucketName });
+    }
     this.collection = this.db.collection<T>(this.collectionName);
   }
 
   getCollection() {
     return this.collection;
+  }
+
+  async uploadToBucket(filename: string, mimeType: string, data: string): Promise<ObjectId> {
+    const uploadStream = this.bucket.openUploadStream(filename, {
+      metadata: { mimeType },
+    });
+
+    uploadStream.end(data);
+
+    return new Promise<ObjectId>((resolve, reject) => {
+      uploadStream.on('finish', () => {
+        console.log(`Uploaded: ${filename}`);
+        resolve(uploadStream.id as ObjectId);
+      });
+
+      uploadStream.on('error', err => {
+        console.error(`Upload failed: ${filename}`, err);
+        reject(err);
+      });
+    });
   }
 
   // Insert a new document
