@@ -1,15 +1,32 @@
 import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { ProfileForm } from '@/components/settings/profile-form';
 import ProfilePictureForm from '@/components/settings/profile-picture-form';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { getRequest } from '@/lib/server-api';
-import { Camera, Link, Mail, Settings } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import UserAvatar from '@/components/common/user-avatar';
 import { User } from '@/models/User';
+import IntegrationCard from '@/components/settings/integration-card';
+import { authUrl } from '@/ai/gmail/email';
 
 export default async function SettingsPage() {
   const user = await getRequest<User>('/users');
+  const userIntegrations = [
+    {
+      id: 'email',
+      name: 'Email',
+      connected: !!user.gmailToken,
+      connect: async () => {
+        "use server";
+        if (!user.gmailToken) {
+          window.open(authUrl, '_blank');
+        } else {
+          await getRequest('/transactions/sync');
+        }
+      },
+    },
+  ];
+
   return (
     <DashboardShell>
       <div className="flex flex-col sm:flex-row gap-8">
@@ -27,41 +44,11 @@ export default async function SettingsPage() {
                   </div>
                 </ProfilePictureForm>
               </UserAvatar>
-              <h2 className="text-lg font-semibold">Hemant Agarwal</h2>
-              <h4 className="text-sm text-muted-foreground">hemantagarwal@gmail.com</h4>
+              <h2 className="text-lg font-semibold">{user.name}</h2>
+              <h4 className="text-sm text-muted-foreground">{user.email}</h4>
             </CardContent>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Integrations</CardTitle>
-              <CardDescription>Connect external services</CardDescription>
-            </CardHeader>
-            <CardContent className="px-4 space-y-3">
-              {[
-                {
-                  id: 'email',
-                  name: 'Email',
-                  icon: Mail,
-                  connected: !!user.gmailToken,
-                  connect: () => {},
-                },
-              ].map(integration => (
-                <div key={integration.id} className="flex items-center space-x-3 w-full">
-                  <div className="flex items-center justify-center p-2 rounded-full bg-muted">
-                    <Mail className="h-6 w-6" />
-                  </div>
-                  <div className="grow">
-                    <p className="font-medium">{integration.name}</p>
-                    <p className="text-sm text-muted-foreground">{integration.connected ? 'Connected' : 'Not Connected'}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    {integration.connected ? <Settings className="h-6 w-6" /> : <Link className="h-6 w-6" />}
-                    <span className="sr-only">Toggle theme</span>
-                  </Button>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
+          <IntegrationCard userIntegrations={userIntegrations} />
         </div>
         <div className="grow">
           <Card>

@@ -9,7 +9,7 @@ import { Toaster } from '@/ui/toaster';
 import { FloatingActionButton } from '@/components/common/floating-button';
 import Providers from './providers';
 import { auth } from '@/auth';
-import { FirstVisitModal } from '@/components/first-visit-modal';
+// import { FirstVisitModal } from '@/components/first-visit-modal';
 
 // const inter = Inter({ subsets: ['latin'] });
 
@@ -26,7 +26,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -35,7 +34,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="relative flex min-h-screen flex-col">
               <SiteHeader />
               <main className="flex-1 w-full max-w-full overflow-x-hidden">
-                {session && !session.user?.name ? <FirstVisitModal /> : children}
+                {children}
+                {/* {session && !session.user?.name ? <FirstVisitModal /> : children} */}
                 <FloatingActionButton />
               </main>
               <SiteFooter />

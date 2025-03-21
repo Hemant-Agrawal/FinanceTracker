@@ -1,11 +1,12 @@
 'use server';
 import { headers } from 'next/headers';
+import { WithId } from 'mongodb';
 
 import { Account } from '@/models/Account';
 import { PaginatedResult } from '@/models/BaseModel';
 import { Investment } from '@/models/Investment';
 import { Transaction } from '@/models/Transaction';
-import { WithId } from 'mongodb';
+import { EmailRecord } from '@/models/EmailRecord';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? '';
 
@@ -65,4 +66,8 @@ export async function fetchTransactions(params = {}): Promise<PaginatedResult<Wi
 
 export async function fetchInvestments(params = {}): Promise<PaginatedResult<WithId<Investment>>> {
   return getRequest('/investments', params);
+}
+
+export async function fetchEmails(params = {}): Promise<WithId<EmailRecord>[]> {
+  return getRequest('/transactions/review', params);
 }

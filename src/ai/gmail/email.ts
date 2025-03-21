@@ -1,4 +1,5 @@
-import { EmailRecordsColl, UserColl } from '@/models';
+import { EmailRecordColl, UserColl } from '@/models';
+import { EmailAttachment } from '@/models/EmailRecord';
 import dayjs from 'dayjs';
 import { gmail_v1, google } from 'googleapis';
 // import { parseTransactionEmail } from './parser';
@@ -22,6 +23,8 @@ export async function getAuthUrl() {
   return authUrl;
 }
 
+export const authUrl = await getAuthUrl();
+
 export async function getAccessToken(code: string) {
   const auth = await getGmailClient();
   const { tokens } = await auth.getToken(code);
@@ -38,12 +41,13 @@ export async function checkForCASEmail(id: string) {
 
   auth.setCredentials({ refresh_token: user.gmailToken });
   const gmail = google.gmail({ version: 'v1', auth });
-  const startDate = dayjs().subtract(1, 'month').startOf('month').format('YYYY/MM/DD');
+  const startDate = dayjs().subtract(10, 'year').startOf('month').format('YYYY/MM/DD');
+  console.log('🔍 Searching for emails after:', startDate);
 
   const res = await gmail.users.messages.list({
     userId: 'me',
     q: `after:${startDate} subject:transaction OR subject:UPI OR subject:debit`,
-    maxResults: 1,
+    maxResults: 500,
   });
 
   if (!res.data.messages) {
@@ -52,29 +56,38 @@ export async function checkForCASEmail(id: string) {
   }
 
   for (const msg of res.data.messages) {
-    const exists = await EmailRecordsColl.exists({ messageId: msg.id! });
+    const exists = await EmailRecordColl.exists({ messageId: msg.id! });
     if (exists) {
       console.log('❌ Email already exists.');
       continue;
     }
+    console.log('🔍 Processing email:', msg.id!);
     const details = await getEmailDetails(msg.id!, gmail);
-    const attachments = [];
+    const attachments: EmailAttachment[] = [];
     if (details.attachments.length > 0) {
       for (const attachment of details.attachments) {
-        attachments.push(await EmailRecordsColl.insertAttachment(attachment));
+        const attachmentId = await EmailRecordColl.insertAttachment(attachment);
+        attachments.push({
+          _id: attachmentId,
+          filename: attachment.filename,
+          mimeType: attachment.mimeType,
+          size: attachment.size,
+        });
       }
     }
-    await EmailRecordsColl.insert({
+    await EmailRecordColl.insert({
       userId: user._id,
       messageId: msg.id!,
       from: details.from!,
       subject: details.subject!,
       body: details.body,
       format: details.format,
+      to: details.to!,
       attachments,
       status: 'pending',
       date: new Date(details.date!),
     }, user._id);
+    console.log('✅ Email processed:', msg.id!, 'with subject:', details.subject!);
   }
 }
 
@@ -89,10 +102,11 @@ async function getEmailDetails(messageId: string, gmail: gmail_v1.Gmail) {
   const subject = headers?.find(header => header.name === 'Subject')?.value;
   const from = headers?.find(header => header.name === 'From')?.value;
   const date = headers?.find(header => header.name === 'Date')?.value;
+  const to = headers?.find(header => header.name === 'To')?.value;
 
   let body = '';
   let format = 'text';
-  const attachments: { filename: string; mimeType: string; data: string }[] = [];
+  const attachments: { filename: string; mimeType: string; data: string; size: number }[] = [];
 
   // Extract body
   if (payload?.parts) {
@@ -126,9 +140,10 @@ async function getEmailDetails(messageId: string, gmail: gmail_v1.Gmail) {
         filename: part.filename,
         mimeType: part.mimeType!,
         data: attachmentResponse.data.data!,
+        size: attachmentResponse.data.size!,
       });
     }
   }
 
-  return { subject, from, date, body, attachments, format };
+  return { subject, from, date, to, body, attachments, format };
 }

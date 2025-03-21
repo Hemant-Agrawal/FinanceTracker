@@ -59,7 +59,7 @@ export function FirstVisitModal() {
         ...data,
       },
     });
-    router.refresh();
+    router.push('/dashboard');
     setIsOpen(false);
   }
 

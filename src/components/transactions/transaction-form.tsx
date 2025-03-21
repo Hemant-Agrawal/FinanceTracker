@@ -25,7 +25,9 @@ const schema = z.object({
   amount: z.string(),
   type: z.enum(['expense', 'income', 'transfer']),
   date: z.date(),
-  paymentMethod: z.string(),
+  paymentMethod: z.string({
+    required_error: 'Payment method is required',
+  }),
   notes: z.string(),
   tags: z.array(z.string()),
 });
@@ -43,7 +45,7 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
       amount: '0',
       type: 'expense',
       date: new Date(),
-      paymentMethod: `${paymentMethods[0]._id}`,
+      paymentMethod: paymentMethods.length > 0 ? `${paymentMethods[0]._id}` : '',
       notes: '',
       tags: [],
     },
@@ -125,7 +127,7 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
           <FormField control={control} name="date" label="Date" type="date" />
         </div>
         <FormField control={control} name="description" label="Description" type="input" />
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <FormField
             control={control}
             name="paymentMethod"
@@ -133,7 +135,7 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
             type="select"
             options={paymentMethods.map(p => ({ label: p.name, value: `${p._id}` }))}
           />
-          <FormField control={control} name="amount" label="Amount" type="number" className="col-span-2" />
+          <FormField control={control} name="amount" label="Amount" type="number" className="md:col-span-2" />
         </div>
         <FormField control={control} name="tags" label="Tags" type="multi-select" options={tags} />
         <FormField control={control} name="notes" label="Notes" type="textarea" />

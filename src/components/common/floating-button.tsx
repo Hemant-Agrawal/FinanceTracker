@@ -5,13 +5,14 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, X, TrendingUp, Wallet, CreditCard, BarChart4, PiggyBank } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Backdrop } from '@/ui/backdrop';
-
+import { useRouter } from 'next/navigation';
 interface FloatingActionButtonProps {
   className?: string;
 }
 
 export function FloatingActionButton({ className }: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -28,45 +29,47 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
       icon: <Wallet className="h-5 w-5" />,
       onClick: () => {
         console.log('Add Transaction clicked');
+        router.push('/transactions/create');
         setIsOpen(false);
       },
     },
     {
-      id: 'add-investment',
-      label: 'Add Investment',
+      id: 'add-account',
+      label: 'Add Account',
       icon: <TrendingUp className="h-5 w-5" />,
       onClick: () => {
-        console.log('Add Investment clicked');
+        console.log('Add Account clicked');
+        router.push('/accounts/create');
         setIsOpen(false);
       },
     },
-    {
-      id: 'add-expense',
-      label: 'Add Expense',
-      icon: <CreditCard className="h-5 w-5" />,
-      onClick: () => {
-        console.log('Add Expense clicked');
-        setIsOpen(false);
-      },
-    },
-    {
-      id: 'add-budget',
-      label: 'Add Budget',
-      icon: <BarChart4 className="h-5 w-5" />,
-      onClick: () => {
-        console.log('Add Budget clicked');
-        setIsOpen(false);
-      },
-    },
-    {
-      id: 'add-savings',
-      label: 'Add Savings Goal',
-      icon: <PiggyBank className="h-5 w-5" />,
-      onClick: () => {
-        console.log('Add Savings Goal clicked');
-        setIsOpen(false);
-      },
-    },
+    // {
+    //   id: 'add-expense',
+    //   label: 'Add Expense',
+    //   icon: <CreditCard className="h-5 w-5" />,
+    //   onClick: () => {
+    //     console.log('Add Expense clicked');
+    //     setIsOpen(false);
+    //   },
+    // },
+    // {
+    //   id: 'add-budget',
+    //   label: 'Add Budget',
+    //   icon: <BarChart4 className="h-5 w-5" />,
+    //   onClick: () => {
+    //     console.log('Add Budget clicked');
+    //     setIsOpen(false);
+    //   },
+    // },
+    // {
+    //   id: 'add-savings',
+    //   label: 'Add Savings Goal',
+    //   icon: <PiggyBank className="h-5 w-5" />,
+    //   onClick: () => {
+    //     console.log('Add Savings Goal clicked');
+    //     setIsOpen(false);
+    //   },
+    // },
   ];
 
   return (

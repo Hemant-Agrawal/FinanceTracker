@@ -1,26 +1,33 @@
 import { Filter, ObjectId, WithId } from 'mongodb';
 import { BaseModel, Model } from './BaseModel';
 
-export interface EmailRecords extends Model {
+export interface EmailAttachment extends WithId<{
+  filename: string;
+  mimeType: string;
+  size: number;
+}> {}
+
+export interface EmailRecord extends Model {
   userId: ObjectId;
   messageId: string;
   date: Date;
   from: string;
+  to: string;
   subject: string;
   body: string;
   format: string;
-  attachments: ObjectId[];
+  attachments: EmailAttachment[];
   status: string;
   error?: string;
 }
 
-export class EmailRecordsModel extends BaseModel<EmailRecords> {
+export class EmailRecordModel extends BaseModel<EmailRecord> {
   constructor() {
-    super('emailRecords'); // Pass collection name
+    super('emailRecord', 'attachments'); // Pass collection name
     // this.getCollection().createIndex({ messageId: 1 }, { unique: true });
   }
 
-  async list(filter?: Filter<EmailRecords>, limit = 10, skip = 0, sort = {}): Promise<WithId<EmailRecords>[]> {
+  async list(filter?: Filter<EmailRecord>, limit = 10, skip = 0, sort = {}): Promise<WithId<EmailRecord>[]> {
     return super.list(filter, limit, skip, sort);
   }
 

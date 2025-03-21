@@ -176,6 +176,12 @@ export function SiteHeader() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/transactions/review">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Review</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="" onClick={() => signOut()}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Logout</span>
