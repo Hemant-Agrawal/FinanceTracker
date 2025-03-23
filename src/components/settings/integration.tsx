@@ -1,20 +1,29 @@
 'use client';
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Link, Mail, Settings } from 'lucide-react';
 import { User } from '@/models/User';
 import { getRequest } from '@/lib/api';
 import { Button } from '../ui/button';
-// import { getAuthUrl } from '@/ai/gmail/email';
 
-interface UserIntegration {
-  id: string;
-  name: string;
-  connected: boolean;
-  connect: () => Promise<void>;
-}
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const IntegrationCard = ({ userIntegrations }: { userIntegrations: UserIntegration[] }) => {
+const Integration = ({ user }: { user: User }) => {
+  const userIntegrations = [
+    {
+      id: 'email',
+      name: 'Email',
+      connected: !!user.gmail?.refreshToken,
+      connect: async () => {
+        if (!user.gmail?.refreshToken) {
+          window.open(`${BASE_URL}/api/installation`, '_blank');
+        } else {
+          await getRequest('/transactions/sync');
+        }
+      },
+    },
+  ];
   return (
     <Card>
       <CardHeader>
@@ -42,4 +51,4 @@ const IntegrationCard = ({ userIntegrations }: { userIntegrations: UserIntegrati
   );
 };
 
-export default IntegrationCard;
+export default Integration;

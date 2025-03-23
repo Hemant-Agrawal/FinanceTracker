@@ -23,7 +23,12 @@ export interface User extends Model {
   dateFormat?: string;
   darkMode?: boolean;
   notifications?: boolean;
-  gmailToken?: string;
+  gmail?: {
+    refreshToken?: string;
+    syncEnabled?: boolean;
+    syncInProgress?: boolean;
+    lastSyncedAt?: Date;
+  }
 }
 
 export class UserModel extends BaseModel<User> {

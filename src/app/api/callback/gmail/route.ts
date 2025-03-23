@@ -12,6 +12,7 @@ export const GET = async function (req: Request) {
   const refreshToken = await getAccessToken(code);
   if (!refreshToken) return NextResponse.json({ message: 'No refresh token' }, { status: 400 });
 
-  const user = await UserColl.updateById(authUser.user.id, { gmailToken: refreshToken });
-  return NextResponse.json(user);
+  const user = await UserColl.updateById(authUser.user.id, { gmail: { refreshToken, syncEnabled: true } });
+  if (!user) return NextResponse.json({ message: 'User not found' }, { status: 404 });
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/settings`);
 };

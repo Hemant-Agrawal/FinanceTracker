@@ -32,9 +32,10 @@ export interface Transaction extends Model {
   notes?: string;
   category?: string;
   status?: string;
+  referenceId?: string;
   isRecurring?: boolean;
   splitExpense?: SplitExpense;
-  history: WithId<History>[];
+  history?: WithId<History>[];
 }
 
 export class TransactionModel extends BaseModel<Transaction> {

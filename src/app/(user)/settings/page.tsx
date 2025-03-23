@@ -6,26 +6,10 @@ import { getRequest } from '@/lib/server-api';
 import { Camera } from 'lucide-react';
 import UserAvatar from '@/components/common/user-avatar';
 import { User } from '@/models/User';
-import IntegrationCard from '@/components/settings/integration-card';
-import { authUrl } from '@/ai/gmail/email';
+import Integration from '@/components/settings/integration';
 
 export default async function SettingsPage() {
   const user = await getRequest<User>('/users');
-  const userIntegrations = [
-    {
-      id: 'email',
-      name: 'Email',
-      connected: !!user.gmailToken,
-      connect: async () => {
-        "use server";
-        if (!user.gmailToken) {
-          window.open(authUrl, '_blank');
-        } else {
-          await getRequest('/transactions/sync');
-        }
-      },
-    },
-  ];
 
   return (
     <DashboardShell>
@@ -48,7 +32,7 @@ export default async function SettingsPage() {
               <h4 className="text-sm text-muted-foreground">{user.email}</h4>
             </CardContent>
           </Card>
-          <IntegrationCard userIntegrations={userIntegrations} />
+          <Integration user={user} />
         </div>
         <div className="grow">
           <Card>

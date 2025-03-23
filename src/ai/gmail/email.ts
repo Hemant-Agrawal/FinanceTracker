@@ -1,29 +1,11 @@
-import { EmailRecordColl, UserColl } from '@/models';
+import { AccountColl, EmailRecordColl, TransactionColl, UserColl } from '@/models';
 import { EmailAttachment } from '@/models/EmailRecord';
 import dayjs from 'dayjs';
 import { gmail_v1, google } from 'googleapis';
-// import { parseTransactionEmail } from './parser';
-// import { JSDOM } from 'jsdom';
+import { parseEmail, parseHtmlToText } from '../parser';
+import { getGmailClient } from './client';
+import { ObjectId } from 'mongodb';
 
-export async function getGmailClient() {
-  return new google.auth.OAuth2(
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET,
-    process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI
-  );
-}
-
-export async function getAuthUrl() {
-  const auth = await getGmailClient();
-  const authUrl = auth.generateAuthUrl({
-    access_type: 'offline',
-    scope: ['https://www.googleapis.com/auth/gmail.readonly'],
-  });
-  console.log('🔗 Authorize this app by visiting this URL:', authUrl);
-  return authUrl;
-}
-
-export const authUrl = await getAuthUrl();
 
 export async function getAccessToken(code: string) {
   const auth = await getGmailClient();
@@ -37,11 +19,17 @@ export async function checkForCASEmail(id: string) {
   if (!user) {
     throw new Error('User not found');
   }
+  if (!user.gmail?.refreshToken) {
+    throw new Error('User has no refresh token');
+  }
+  if (user.gmail.syncInProgress) {
+    throw new Error('Sync already in progress');
+  }
   const auth = await getGmailClient();
 
-  auth.setCredentials({ refresh_token: user.gmailToken });
+  auth.setCredentials({ refresh_token: user.gmail.refreshToken });
   const gmail = google.gmail({ version: 'v1', auth });
-  const startDate = dayjs().subtract(10, 'year').startOf('month').format('YYYY/MM/DD');
+  const startDate = dayjs().startOf('month').format('YYYY/MM/DD');
   console.log('🔍 Searching for emails after:', startDate);
 
   const res = await gmail.users.messages.list({
@@ -54,6 +42,14 @@ export async function checkForCASEmail(id: string) {
     console.log('❌ No new CAS emails found.');
     return;
   }
+
+  await UserColl.updateById(id, { gmail: { ...user.gmail, syncInProgress: true } });
+  const paymentMethods = (await AccountColl.find({ createdBy: user._id })).map(p => ({
+    id: p._id.toString(),
+    name: p.name,
+    details: p.accountDetails,
+    type: p.type,
+  }));
 
   for (const msg of res.data.messages) {
     const exists = await EmailRecordColl.exists({ messageId: msg.id! });
@@ -75,20 +71,53 @@ export async function checkForCASEmail(id: string) {
         });
       }
     }
-    await EmailRecordColl.insert({
-      userId: user._id,
-      messageId: msg.id!,
-      from: details.from!,
-      subject: details.subject!,
-      body: details.body,
-      format: details.format,
-      to: details.to!,
-      attachments,
-      status: 'pending',
-      date: new Date(details.date!),
-    }, user._id);
+    const res = await parseEmail(details.format === 'html' ? parseHtmlToText(details.body) : details.body, paymentMethods);
+    console.log('🔍 Parsed email:', res);
+
+    const referenceId = await EmailRecordColl.insert(
+      {
+        userId: user._id,
+        messageId: msg.id!,
+        from: details.from!,
+        subject: details.subject!,
+        body: details.body,
+        format: details.format,
+        to: details.to!,
+        attachments,
+        status: 'pending',
+        date: new Date(details.date!),
+      },
+      user._id
+    );
+    const paymentMethod = paymentMethods.find(p => p.id === res.paymentMethod.id);
+    if (!paymentMethod) {
+      console.log('❌ Payment method not found.');
+      continue;
+    }
+
+    await TransactionColl.insert(
+      {
+        amount: res.amount,
+        date: new Date(details.date!),
+        description: res.description,
+        status: 'pending',
+        type: res.type,
+        category: res.category,
+        tags: res.tags,
+        notes: res.notes,
+        referenceId: referenceId?.toString(),
+        paymentMethod: {
+          _id: new ObjectId(paymentMethod.id),
+          name: paymentMethod.name,
+          type: paymentMethod.type,
+        },
+        history: [],
+      },
+      user._id
+    );
     console.log('✅ Email processed:', msg.id!, 'with subject:', details.subject!);
   }
+  await UserColl.updateById(id, { gmail: { ...user.gmail, lastSyncedAt: new Date(), syncInProgress: false } });
 }
 
 async function getEmailDetails(messageId: string, gmail: gmail_v1.Gmail) {

@@ -17,7 +17,6 @@ const profileFormSchema = z.object({
     required_error: 'Email is required.',
   }),
   phone: z.string().optional(),
-  gmailToken: z.string().optional(),
   currency: z.string().optional(),
   dateFormat: z.string().optional(),
 });

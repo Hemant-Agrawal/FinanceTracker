@@ -131,7 +131,7 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
             </Button>
           </CardFooter>
         </Card>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-sm">
               {currentIndex + 1} of {emails.length}
