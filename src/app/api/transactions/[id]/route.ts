@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { TransactionColl } from '@/models';
 import { auth } from '@/auth';
+
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await auth();
   if (!user) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });

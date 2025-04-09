@@ -42,7 +42,7 @@ export const parseEmail = async (email: string, paymentMethods: PaymentMethod[])
 - "description": Extract the merchant/store/recipient name.
 - "amount": Extract the transaction amount as a number.
 - "date": Extract the transaction date in "DD-MM-YYYY" format.
-- "type": Identify the transaction type: "expense" for debits, "income" for credits, "transfer" for fund transfers.
+- "type": Identify the transaction type: "expense" for debit, "income" for credit, "transfer" for fund transfers.
 - "paymentMethod": Match against the provided "paymentMethods" array based on "name" and "details" fields. If no match is found, return an empty object \`{}\`.
 - "tags": Assign tags like ["UPI", "Shopping", "Food"] based on context.
 - "category": Classify as "Shopping", "Food", "Travel", "Bills", or other relevant categories.

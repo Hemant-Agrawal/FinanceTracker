@@ -23,7 +23,7 @@ const accountFormSchema = z.object({
   openingBalance: z.string().min(1, {
     message: 'Opening balance is required.',
   }),
-  details: z.string().optional(),
+  accountDetails: z.string().optional(),
 });
 
 type AccountFormValues = z.infer<typeof accountFormSchema>;
@@ -40,7 +40,7 @@ export function AccountForm({ account }: AccountFormProps) {
     resolver: zodResolver(accountFormSchema),
     defaultValues: {
       name: account?.name ?? '',
-      details: account?.accountDetails ?? '',
+      accountDetails: account?.accountDetails ?? '',
       openingBalance: account?.openingBalance?.toString() ?? '',
       type: account?.type ?? 'Bank',
     },
@@ -91,7 +91,7 @@ export function AccountForm({ account }: AccountFormProps) {
         </div>
         <FormField
           control={form.control}
-          name="details"
+          name="accountDetails"
           label="Account Details (Optional)"
           placeholder="Additional details about this account"
           type="textarea"

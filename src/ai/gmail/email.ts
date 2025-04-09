@@ -34,7 +34,7 @@ export async function checkForCASEmail(id: string) {
 
   const res = await gmail.users.messages.list({
     userId: 'me',
-    q: `after:${startDate} subject:transaction OR subject:UPI OR subject:debit`,
+    q: `after:${startDate} subject:transaction OR subject:UPI OR subject:debit OR debited OR credited`,
     maxResults: 500,
   });
 

@@ -68,6 +68,8 @@ export async function fetchInvestments(params = {}): Promise<PaginatedResult<Wit
   return getRequest('/investments', params);
 }
 
-export async function fetchEmails(params = {}): Promise<WithId<EmailRecord>[]> {
+export async function fetchTransactionsForReview(
+  params = {}
+): Promise<{ transactions: WithId<Transaction>[]; emailRecords: WithId<EmailRecord>[] }> {
   return getRequest('/transactions/review', params);
 }

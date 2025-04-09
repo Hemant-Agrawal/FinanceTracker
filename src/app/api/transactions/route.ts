@@ -16,7 +16,7 @@ export const GET = async function (req: Request) {
 
   // Filters
   const search = searchParams.get('search') || undefined; // Filter by investment type
-  const filters: Filter<Transaction> = {};
+  const filters: Filter<Transaction> = { status: 'approved' };
   if (search) filters.description = { $regex: search };
   filters.createdBy = new ObjectId(authUser.user.id);
 

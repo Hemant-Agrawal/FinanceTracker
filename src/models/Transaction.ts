@@ -44,16 +44,17 @@ export class TransactionModel extends BaseModel<Transaction> {
   }
 
   async insert(document: OptionalId<Transaction>, userId: ObjectId | string): Promise<ObjectId | undefined> {
-    document.status = 'Completed';
+    if (!document.status) document.status = 'approved';
     return super.insert(document, userId);
   }
 
   async getTotalIncome(filter: Filter<Transaction>, userId: ObjectId | string) {
     const totalIncome = await this.getCollection().find({
+      ...filter,
       isDeleted: { $ne: true },
       createdBy: new ObjectId(userId),
-      ...filter,
       type: 'income',
+      status: 'approved',
     }).toArray();
     return totalIncome.reduce((acc, curr) => acc + curr.amount, 0);
   }
@@ -64,12 +65,17 @@ export class TransactionModel extends BaseModel<Transaction> {
       createdBy: new ObjectId(userId),
       ...filter,
       type: 'expense',
+      status: 'approved',
     }).toArray();
     return totalExpenses.reduce((acc, curr) => acc + curr.amount, 0);
   }
 
 
   async list(filter?: Filter<Transaction>, limit = 10, skip = 0, sort = {}): Promise<WithId<Transaction>[]> {
+    if (!filter) filter = {};
+    if (!filter?.status) {
+      filter.status = 'approved';
+    }
     return this.getCollection()
       .aggregate<WithId<Transaction>>([
         { $match: filter },

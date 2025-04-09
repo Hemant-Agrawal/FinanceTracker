@@ -8,20 +8,28 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import EmailViewer from '@/components/common/email-viewer';
+import { Transaction } from '@/models/Transaction';
 import { EmailRecord } from '@/models/EmailRecord';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '../ui/accordion';
+import { TransactionDetails } from './transaction-details';
+import { postRequest } from '@/lib/api';
 
-export default function TransactionReview({ emails }: { emails: EmailRecord[] }) {
+export default function TransactionReview({
+  transactions,
+  emailRecords,
+}: {
+  transactions: Transaction[];
+  emailRecords: EmailRecord[];
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const router = useRouter();
   const { toast } = useToast();
 
-  const email = emails[currentIndex];
-  const pendingCount = emails.filter(t => t.status === 'pending').length;
+  const transaction = transactions[currentIndex];
+  const pendingCount = transactions.filter(t => t.status === 'pending').length;
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (!emails.length) return;
+      if (!transactions.length) return;
 
       if (e.key === 'y' || e.key === 'Enter') {
         handleApprove();
@@ -33,7 +41,7 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
         handleNext();
       }
     },
-    [emails, currentIndex]
+    [transactions, currentIndex]
   );
 
   useEffect(() => {
@@ -44,7 +52,7 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
   }, [handleKeyDown]);
 
   const handleNext = () => {
-    if (currentIndex < emails.length - 1) {
+    if (currentIndex < transactions.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
@@ -56,25 +64,25 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
   };
 
   const updateStatus = async (status: string) => {
-    if (!email) return;
+    if (!transaction) return;
 
     try {
-      //   await updateTransactionStatus(currentTransaction.id, status)
+      await postRequest(`/transactions/${transaction._id}/${status}`);
 
       toast({
-        title: `Transaction ${status === 'approved' ? 'approved' : 'rejected'}`,
-        description: `Transaction #${email._id} has been ${status}`,
-        variant: status === 'approved' ? 'default' : 'destructive',
+        title: `Transaction ${status === 'approve' ? 'approved' : 'rejected'}`,
+        description: `Transaction #${transaction._id} has been ${status}`,
+        variant: status === 'approve' ? 'success' : 'destructive',
       });
 
       // Move to next pending transaction
-      const nextPendingIndex = emails.findIndex((t, i) => i > currentIndex && t.status === 'pending');
+      const nextPendingIndex = transactions.findIndex((t, i) => i > currentIndex && t.status === 'pending');
 
       if (nextPendingIndex !== -1) {
         setCurrentIndex(nextPendingIndex);
       } else {
         // If no more pending, stay on current or go to first pending
-        const firstPendingIndex = emails.findIndex(t => t.status === 'pending');
+        const firstPendingIndex = transactions.findIndex(t => t.status === 'pending');
         if (firstPendingIndex !== -1 && firstPendingIndex !== currentIndex) {
           setCurrentIndex(firstPendingIndex);
         }
@@ -88,10 +96,10 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
     }
   };
 
-  const handleApprove = () => updateStatus('approved');
-  const handleReject = () => updateStatus('rejected');
+  const handleApprove = () => updateStatus('approve');
+  const handleReject = () => updateStatus('reject');
 
-  if (!emails.length) {
+  if (!transactions.length) {
     return (
       <div className="text-center py-12">
         <h2 className="text-xl font-semibold mb-4">No transactions to review</h2>
@@ -100,24 +108,28 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
     );
   }
 
+  const email = emailRecords.find(e => e._id === transaction.referenceId);
+
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div>
+    <div className="flex gap-6">
+      <div className="w-full max-w-lg">
         <Card>
-          <CardHeader>
+          {/* <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Transaction Details</span>
               <Badge
                 variant={
-                  email.status === 'approved' ? 'success' : email.status === 'rejected' ? 'destructive' : 'secondary'
+                  transaction.status === 'approved' ? 'success' : transaction.status === 'rejected' ? 'destructive' : 'secondary'
                 }
               >
-                {email.status}
+                {transaction.status}
               </Badge>
             </CardTitle>
-          </CardHeader>
-          <CardContent>{/* <TransactionDetails transaction={currentTransaction} /> */}</CardContent>
-          <CardFooter className="flex justify-between border-t pt-6">
+          </CardHeader> */}
+          <CardContent>
+            <TransactionDetails transaction={transaction} hideHistory />
+          </CardContent>
+          <CardFooter className="flex justify-between border-t p-4">
             <Button
               variant="outline"
               onClick={handleReject}
@@ -131,10 +143,10 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
             </Button>
           </CardFooter>
         </Card>
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex items-center justify-between mt-2">
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-sm">
-              {currentIndex + 1} of {emails.length}
+              {currentIndex + 1} of {transactions.length}
             </Badge>
             <Badge variant={pendingCount > 0 ? 'secondary' : 'outline'} className="text-sm">
               {pendingCount} pending
@@ -154,7 +166,7 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
               variant="outline"
               size="icon"
               onClick={handleNext}
-              disabled={currentIndex === emails.length - 1}
+              disabled={currentIndex === transactions.length - 1}
               title="Next (Right Arrow)"
             >
               <ChevronRight className="h-4 w-4" />
@@ -162,7 +174,7 @@ export default function TransactionReview({ emails }: { emails: EmailRecord[] })
           </div>
         </div>
       </div>
-      <EmailViewer email={email} className="col-span-2" />
+      {email && <EmailViewer email={email} className="w-full" />}
     </div>
   );
 }

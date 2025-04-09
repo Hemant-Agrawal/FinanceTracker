@@ -10,18 +10,21 @@ import HistoryCard from '../common/history';
 
 interface TransactionDetailsProps {
   transaction: Transaction;
+  hideHistory?: boolean;
 }
 
-export function TransactionDetails({ transaction }: TransactionDetailsProps) {
+export function TransactionDetails({ transaction, hideHistory = false }: TransactionDetailsProps) {
   return (
     <Tabs defaultValue="details">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="details">Details</TabsTrigger>
-        {/* <TabsTrigger value="splits">
+      {!hideHistory && (
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="details">Details</TabsTrigger>
+          {/* <TabsTrigger value="splits">
               {transaction.splitExpense ? 'Split Details' : 'Related Transactions'}
             </TabsTrigger> */}
-        <TabsTrigger value="history">History</TabsTrigger>
-      </TabsList>
+          <TabsTrigger value="history">History</TabsTrigger>
+        </TabsList>
+      )}
 
       <TabsContent value="details" className="space-y-6 pt-4">
         <div className="flex justify-between items-center">
@@ -126,7 +129,7 @@ export function TransactionDetails({ transaction }: TransactionDetailsProps) {
         )}
       </TabsContent>
       <TabsContent value="history" className="space-y-4 pt-4">
-        {transaction.history?.length > 0 ? (
+        {transaction.history && transaction.history.length > 0 ? (
           transaction.history.map(entry => <HistoryCard key={`${entry._id}`} user={'system'} {...entry} />)
         ) : (
           <div className="text-center py-8 text-muted-foreground">
