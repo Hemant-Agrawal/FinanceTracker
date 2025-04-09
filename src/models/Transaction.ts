@@ -35,7 +35,7 @@ export interface Transaction extends Model {
   referenceId?: string;
   isRecurring?: boolean;
   splitExpense?: SplitExpense;
-  history?: WithId<History>[];
+  history: WithId<History>[];
 }
 
 export class TransactionModel extends BaseModel<Transaction> {
@@ -45,6 +45,7 @@ export class TransactionModel extends BaseModel<Transaction> {
 
   async insert(document: OptionalId<Transaction>, userId: ObjectId | string): Promise<ObjectId | undefined> {
     if (!document.status) document.status = 'approved';
+    if(!document.history) document.history = [];
     return super.insert(document, userId);
   }
 

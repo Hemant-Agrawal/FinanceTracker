@@ -12,7 +12,7 @@ interface EmailViewerProps {
 export default function EmailViewer({ email, className }: EmailViewerProps) {
   const hasAttachments = email.attachments && email.attachments.length > 0;
 
-  const handlePreview = (attachment: EmailAttachment) => {
+  const handlePreview = () => {
     // setSelectedAttachment(attachment)
     // setPreviewOpen(true)
   };
@@ -79,7 +79,7 @@ export default function EmailViewer({ email, className }: EmailViewerProps) {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => handlePreview(attachment)} title="Preview">
+                  <Button variant="ghost" size="icon" onClick={() => handlePreview()} title="Preview">
                     <Eye className="h-4 w-4" />
                   </Button>
                   <Button variant="ghost" size="icon" onClick={() => handleDownload(attachment)} title="Download">

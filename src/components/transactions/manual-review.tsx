@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight, Check, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import EmailViewer from '@/components/common/email-viewer';
@@ -88,6 +88,7 @@ export default function TransactionReview({
         }
       }
     } catch (error) {
+      console.error(error)
       toast({
         title: 'Error updating transaction',
         description: 'Please try again',

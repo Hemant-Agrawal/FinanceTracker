@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, X, TrendingUp, Wallet, CreditCard, BarChart4, PiggyBank } from 'lucide-react';
+import { Plus, X, TrendingUp, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Backdrop } from '@/ui/backdrop';
 import { useRouter } from 'next/navigation';

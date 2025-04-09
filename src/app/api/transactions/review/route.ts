@@ -4,7 +4,7 @@ import { EmailRecordColl, TransactionColl } from '@/models';
 import { Filter, ObjectId } from 'mongodb';
 import { Transaction } from '@/models/Transaction';
 
-export const GET = async function (req: Request) {
+export const GET = async function () {
   const authUser = await auth();
   if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
 

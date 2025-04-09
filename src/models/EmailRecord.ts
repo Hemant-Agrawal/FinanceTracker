@@ -1,12 +1,12 @@
 import { Filter, ObjectId, WithId } from 'mongodb';
 import { BaseModel, Model } from './BaseModel';
 
-export interface EmailAttachment extends WithId<{
+export interface EmailAttachment {
   filename: string;
   mimeType: string;
   size: number;
-}> {}
-
+  _id: ObjectId;
+}
 export interface EmailRecord extends Model {
   userId: ObjectId;
   messageId: string;
