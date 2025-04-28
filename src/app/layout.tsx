@@ -1,7 +1,6 @@
 import type React from 'react';
 import '@/styles/globals.css';
 import type { Metadata, Viewport } from 'next';
-// import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/site-header';
 import { SiteFooter } from '@/components/site-footer';
@@ -12,7 +11,6 @@ import { auth } from '@/auth';
 import { InstallButton } from '@/components/pwa';
 // import { FirstVisitModal } from '@/components/first-visit-modal';
 
-// const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
