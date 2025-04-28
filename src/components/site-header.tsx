@@ -54,18 +54,17 @@ const navItems: NavItem[] = [
   // },
 ];
 
+
 export function SiteHeader() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isAuthenticated = status === 'authenticated';
-  const isUserInfoSaved = !!session?.user?.name;
 
   const NavContent = () => (
     <>
       {isAuthenticated &&
-        isUserInfoSaved &&
         navItems.map(item => {
           if (item.children) {
             return (

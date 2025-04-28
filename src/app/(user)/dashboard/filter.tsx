@@ -10,7 +10,7 @@ const Filter = () => {
   return (
     <>
       <Select defaultValue={searchParams.get('period') || 'week'} onValueChange={value => updateSearchParams({ period: value })}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[120px] md:w-[180px]">
           <SelectValue placeholder="Select time period" />
         </SelectTrigger>
         <SelectContent>
