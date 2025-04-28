@@ -29,6 +29,7 @@ export interface User extends Model {
     syncInProgress?: boolean;
     lastSyncedAt?: Date;
   }
+  pushSubscription?: PushSubscription[];
 }
 
 export class UserModel extends BaseModel<User> {

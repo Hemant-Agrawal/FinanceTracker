@@ -8,6 +8,7 @@ import {
   ObjectId,
   OptionalUnlessRequiredId,
   Sort,
+  UpdateFilter,
   WithId,
 } from 'mongodb';
 import { connectClient } from '@/lib/mongodb';
@@ -118,6 +119,12 @@ export class BaseModel<T extends Model> {
       updatedData.updatedBy = userId;
     }
     const result = await this.collection.updateOne({ _id: new ObjectId(id) } as Filter<T>, { $set: updatedData });
+    return result.modifiedCount > 0;
+  }
+
+  // Update a document by ID
+  async updateOne(filter: Filter<T>, updatedData: Document[] | UpdateFilter<T>): Promise<boolean> {
+    const result = await this.collection.updateOne(filter as Filter<T>, updatedData);
     return result.modifiedCount > 0;
   }
 

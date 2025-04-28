@@ -6,6 +6,7 @@ import { Plus, X, TrendingUp, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Backdrop } from '@/ui/backdrop';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 interface FloatingActionButtonProps {
   className?: string;
 }
@@ -13,6 +14,10 @@ interface FloatingActionButtonProps {
 export function FloatingActionButton({ className }: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const { status } = useSession();
+  const isAuthenticated = status === 'authenticated';
+
+  if (!isAuthenticated) return null;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);

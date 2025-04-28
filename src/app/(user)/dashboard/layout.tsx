@@ -24,12 +24,12 @@ export default function Layout({
       </DashboardHeader>
       <div className="space-y-6">
         {summary}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 grid-cols-1">
           {comparison}
           {breakdown}
         </div>
         {children}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 grid-cols-1">
           {portfolio}
           {budget}
         </div>

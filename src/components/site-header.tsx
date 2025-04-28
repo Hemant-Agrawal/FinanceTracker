@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -15,6 +15,7 @@ import {
   ArrowRight,
   LogOut,
   CandlestickChart,
+  Bell,
 } from 'lucide-react';
 import { cn, getInitial } from '@/lib/utils';
 import { ModeToggle } from '@/components/mode-toggle';
@@ -54,13 +55,83 @@ const navItems: NavItem[] = [
   // },
 ];
 
+async function subscribeUser() {
+  const registration = await navigator.serviceWorker.ready;
+
+  const subscription = await registration.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+  });
+
+  // Send subscription to your server
+  await fetch('/api/subscribe', {
+    method: 'POST',
+    body: JSON.stringify(subscription),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
 export function SiteHeader() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [subscription, setSubscription] = useState<PushSubscription | null>(null);
 
   const isAuthenticated = status === 'authenticated';
   const isUserInfoSaved = !!session?.user?.name;
+
+  async function subscribeToPush() {
+    const registration = await navigator.serviceWorker.ready;
+    const sub = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+    });
+    setSubscription(sub);
+    await subscribeUser();
+  }
+
+  async function unsubscribeFromPush() {
+    await subscription?.unsubscribe();
+    setSubscription(null);
+    //   await unsubscribeUser()
+  }
+
+  const handleClick = () => {
+    if (subscription) {
+      unsubscribeFromPush();
+    } else {
+      subscribeToPush();
+    }
+  };
+
+  useEffect(() => {
+    async function registerServiceWorker() {
+      const registration = await navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        updateViaCache: 'none',
+      });
+      const sub = await registration.pushManager.getSubscription();
+      setSubscription(sub);
+    }
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      registerServiceWorker();
+    }
+  }, []);
 
   const NavContent = () => (
     <>
@@ -180,6 +251,12 @@ export function SiteHeader() {
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Review</span>
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild onClick={handleClick}>
+                    <div>
+                      <Bell className="mr-2 h-4 w-4" />
+                      <span>{subscription ? 'Subscribed' : 'Subscribe'}</span>
+                    </div>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="" onClick={() => signOut()}>
