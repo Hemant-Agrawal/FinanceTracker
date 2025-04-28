@@ -40,7 +40,7 @@ export function InstallButton() {
     setShowInstallButton(false);
   };
 
-  if (!showInstallButton) return <>All good</>;
+  if (!showInstallButton) return <></>;
 
   return (
     <button
