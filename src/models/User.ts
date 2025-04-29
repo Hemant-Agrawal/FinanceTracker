@@ -29,6 +29,11 @@ export interface User extends Model {
     syncInProgress?: boolean;
     lastSyncedAt?: Date;
   }
+  upstok?: {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAt?: Date;
+  }
   pushSubscription?: PushSubscription[];
 }
 

@@ -78,9 +78,20 @@ const Integration = ({ user }: { user: User }) => {
       connected: !!user.gmail?.refreshToken,
       connect: async () => {
         if (!user.gmail?.refreshToken) {
-          window.open(`${BASE_URL}/api/installation`, '_blank');
+          window.open(`${BASE_URL}/api/installation?type=gmail`, '_blank');
         } else {
           await getRequest('/transactions/sync');
+        }
+      },
+    },
+    {
+      id: 'upstok',
+      name: 'Upstok',
+      connected: !!user.upstok,
+      connect: async () => {
+        if (!user.upstok) {
+          window.open(`${BASE_URL}/api/installation?type=upstok`, '_blank');
+        } else {
         }
       },
     },
