@@ -35,7 +35,7 @@ type OverviewData = {
 
 const Summary = async ({ searchParams }: { searchParams: Promise<{ period: string }> }) => {
   const { period } = await searchParams;
-  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period });
+  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period: period || 'week' });
 
   const cards = [
     {
