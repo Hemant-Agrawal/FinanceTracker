@@ -7,6 +7,9 @@ export const GET = async function () {
   if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
 
   const user = await UserColl.findById(authUser.user.id);
+  if (!user?.isInternalUser) {
+    delete user?.isInternalUser;
+  }
   return NextResponse.json(user);
 };
 
@@ -14,9 +17,11 @@ export const PATCH = async function (req: Request) {
   const authUser = await auth();
   if (!authUser?.user?.id) return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
   const body = await req.json();
+  delete body?.isInternalUser;
 
-  const user = await UserColl.updateById(authUser.user.id, body);
-  return NextResponse.json(user);
+  const userUpdated = await UserColl.updateById(authUser.user.id, body);
+  if (!userUpdated) return NextResponse.json({ message: 'User not found' }, { status: 404 });
+  return NextResponse.json(userUpdated);
 };
 
 // export const DELETE = auth(async function (req) {

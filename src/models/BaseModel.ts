@@ -112,6 +112,11 @@ export class BaseModel<T extends Model> {
     return this.collection.find(filter as Filter<T>).toArray();
   }
 
+  // Find one document with optional filter
+  async findOne(filter: Filter<T> = {}): Promise<WithId<T> | null> {
+    return this.collection.findOne(filter as Filter<T>);
+  }
+
   // Update a document by ID
   async updateById(id: string | ObjectId, updatedData: Partial<T>, userId?: ObjectId): Promise<boolean> {
     updatedData.updatedAt = new Date();

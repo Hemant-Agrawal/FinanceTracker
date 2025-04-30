@@ -7,6 +7,7 @@ import { User } from '@/models/User';
 import { getRequest } from '@/lib/api';
 import { Button } from '../ui/button';
 import { RemoveIntegrationModal } from './remove-integration-modal';
+import { UpstokIntegrationModal } from './upstok-integration-modal';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 function urlBase64ToUint8Array(base64String: string) {
@@ -42,6 +43,7 @@ async function subscribeUser() {
 
 const Integration = ({ user }: { user: User }) => {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [isUpstokIntegrationOpen, setIsUpstokIntegrationOpen] = useState(false);
 
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready;
@@ -93,7 +95,11 @@ const Integration = ({ user }: { user: User }) => {
       connected: !!user.upstok,
       connect: async () => {
         if (!user.upstok) {
-          window.open(`${BASE_URL}/api/installation?type=upstok`, '_blank');
+          if (user.isInternalUser) {
+            setIsUpstokIntegrationOpen(true);
+          } else {
+            window.open(`${BASE_URL}/api/installation?type=upstok`);
+          }
         } else {
         }
       },
@@ -144,6 +150,7 @@ const Integration = ({ user }: { user: User }) => {
           </div>
         ))}
       </CardContent>
+      <UpstokIntegrationModal isOpen={isUpstokIntegrationOpen} setIsOpen={setIsUpstokIntegrationOpen} />
     </Card>
   );
 };

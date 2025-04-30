@@ -1,40 +1,45 @@
+async function makeRequest(url: string, options: RequestInit, accessToken?: string) {
+  const optionsWithAuth = {
+    ...options,
+    headers: {
+      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  };
+  const response = await fetch(url, optionsWithAuth);
+  if (response.ok) {
+    return response.json();
+  }
+  if (response.status >= 400) {
+    const data = await response.json();
+    console.log(url, data, optionsWithAuth);
+    if (response.status === 401) {
+      throw new Error('Unauthorized');
+    }
+    throw new Error('Bad Request');
+  }
+  throw new Error(`Request failed: ${response.status}`);
+}
+
+const baseUrl = 'https://api.upstox.com/v2';
+const baseUrlV3 = 'https://api.upstox.com/v3';
+
 export class UpstoxClient {
   private clientId: string;
   private clientSecret: string;
   private redirectUri: string;
-  private baseUrl: string;
-  private baseUrlV3: string;
 
   constructor() {
     this.clientId = process.env.UPSTOX_CLIENT_ID!;
     this.clientSecret = process.env.UPSTOX_CLIENT_SECRET!;
-    this.redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/upstok`;
-    this.baseUrl = 'https://api.upstox.com/v2';
-    this.baseUrlV3 = 'https://api.upstox.com/v3';
+    // this.redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/upstok`;
+    this.redirectUri = `https://finance-tracker-orpin-rho.vercel.app/auth/upstok`;
   }
 
-  async makeRequest(url: string, options: RequestInit, accessToken?: string) {
-    const optionsWithAuth = {
-      ...options,
-      headers: {
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-    };
-    const response = await fetch(url, optionsWithAuth);
-    if (response.ok) {
-      return response.json();
-    }
-    if (response.status >= 400) {
-      const data = await response.json();
-      console.log(url, data, optionsWithAuth);
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      throw new Error('Bad Request');
-    }
-    throw new Error(`Request failed: ${response.status}`);
+
+  static async makeAccessTokenRequest(clientId: string) {
+    return makeRequest(`${baseUrlV3}/login/auth/token/${clientId}`, { method: 'POST' });
   }
 
   async getAuthUrl(userId: string) {
@@ -44,7 +49,7 @@ export class UpstoxClient {
       redirect_uri: this.redirectUri,
       state: userId,
     });
-    return `${this.baseUrl}/login/authorization/dialog?${params.toString()}`;
+    return `${baseUrl}/login/authorization/dialog?${params.toString()}`;
   }
 
   async getAccessToken(authCode: string) {
@@ -56,40 +61,40 @@ export class UpstoxClient {
       redirect_uri: this.redirectUri,
     });
 
-    return this.makeRequest(`${this.baseUrl}/login/authorization/token`, {
+    return makeRequest(`${baseUrl}/login/authorization/token`, {
       method: 'POST',
       body: body.toString(),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
   }
 
-  async getTradeHistory(accessToken: string) {
+  static async getTradeHistory(accessToken: string) {
     const params = new URLSearchParams({
       start_date: '2023-04-01',
       end_date: '2025-12-31',
       page_number: '1',
       page_size: '5000',
     });
-    return this.makeRequest(`${this.baseUrl}/charges/historical-trades?${params.toString()}`, {}, accessToken);
+    return makeRequest(`${baseUrl}/charges/historical-trades?${params.toString()}`, {}, accessToken);
   }
 
-  async getHoldings(accessToken: string) {
-    return this.makeRequest(`${this.baseUrl}/portfolio/long-term-holdings`, {}, accessToken);
+  static async getHoldings(accessToken: string) {
+    return makeRequest(`${baseUrl}/portfolio/long-term-holdings`, {}, accessToken);
   }
 
-  async getPositions(accessToken: string) {
-    return this.makeRequest(`${this.baseUrl}/portfolio/short-term-holdings`, {}, accessToken);
+  static async getPositions(accessToken: string) {
+    return makeRequest(`${baseUrl}/portfolio/short-term-holdings`, {}, accessToken);
   }
 
-  async getOrderDetails(accessToken: string) {
-    return this.makeRequest(`${this.baseUrl}/orders/details`, {}, accessToken);
+  static async getOrderDetails(accessToken: string) {
+    return makeRequest(`${baseUrl}/orders/details`, {}, accessToken);
   }
 
-  async getOrderHistory(accessToken: string) {
-    return this.makeRequest(`${this.baseUrl}/orders/history`, {}, accessToken);
+  static async getOrderHistory(accessToken: string) {
+    return makeRequest(`${baseUrl}/orders/history`, {}, accessToken);
   }
 
-  async getOrderBook(accessToken: string) {
-    return this.makeRequest(`${this.baseUrl}/orders/book`, {}, accessToken);
+  static async getOrderBook(accessToken: string) {
+    return makeRequest(`${baseUrl}/orders/book`, {}, accessToken);
   }
 }

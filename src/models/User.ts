@@ -35,10 +35,16 @@ export interface User extends Model {
     expiresAt?: Date;
   }
   pushSubscription?: PushSubscription[];
+  isInternalUser?: boolean;
 }
 
 export class UserModel extends BaseModel<User> {
   constructor() {
     super('users'); // Pass collection name
+  }
+
+  async getUserByUpstokClientId(clientId: string) {
+    const user = await this.findOne({ 'upstok.clientId': clientId });
+    return user;
   }
 }
