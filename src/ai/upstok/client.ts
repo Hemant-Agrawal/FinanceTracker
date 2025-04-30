@@ -17,17 +17,22 @@ export class UpstoxClient {
     const optionsWithAuth = {
       ...options,
       headers: {
-        ...options.headers,
-        Authorization: `Bearer ${accessToken}`,
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         'Content-Type': 'application/json',
+        ...options.headers,
       },
     };
     const response = await fetch(url, optionsWithAuth);
     if (response.ok) {
       return response.json();
     }
-    if (response.status === 401) {
-      throw new Error('Unauthorized');
+    if (response.status >= 400) {
+      const data = await response.json();
+      console.log(url, data, optionsWithAuth);
+      if (response.status === 401) {
+        throw new Error('Unauthorized');
+      }
+      throw new Error('Bad Request');
     }
     throw new Error(`Request failed: ${response.status}`);
   }
@@ -51,7 +56,11 @@ export class UpstoxClient {
       redirect_uri: this.redirectUri,
     });
 
-    return this.makeRequest(`${this.baseUrl}/login/authorization/token`, { method: 'POST', body: body.toString() });
+    return this.makeRequest(`${this.baseUrl}/login/authorization/token`, {
+      method: 'POST',
+      body: body.toString(),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
   }
 
   async getTradeHistory(accessToken: string) {
