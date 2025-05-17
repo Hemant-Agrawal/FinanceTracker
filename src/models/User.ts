@@ -29,11 +29,22 @@ export interface User extends Model {
     syncInProgress?: boolean;
     lastSyncedAt?: Date;
   }
+  upstok?: {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAt?: Date;
+  }
   pushSubscription?: PushSubscription[];
+  isInternalUser?: boolean;
 }
 
 export class UserModel extends BaseModel<User> {
   constructor() {
     super('users'); // Pass collection name
+  }
+
+  async getUserByUpstokClientId(clientId: string) {
+    const user = await this.findOne({ 'upstok.clientId': clientId });
+    return user;
   }
 }

@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { Link, Mail, Settings } from 'lucide-react';
+import { Link, Mail, Settings, Bell, ChartPie } from 'lucide-react';
 import { User } from '@/models/User';
 import { getRequest } from '@/lib/api';
 import { Button } from '../ui/button';
-
+import { RemoveIntegrationModal } from './remove-integration-modal';
+import { UpstokIntegrationModal } from './upstok-integration-modal';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 function urlBase64ToUint8Array(base64String: string) {
@@ -42,6 +43,7 @@ async function subscribeUser() {
 
 const Integration = ({ user }: { user: User }) => {
   const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  const [isUpstokIntegrationOpen, setIsUpstokIntegrationOpen] = useState(false);
 
   async function subscribeToPush() {
     const registration = await navigator.serviceWorker.ready;
@@ -63,6 +65,7 @@ const Integration = ({ user }: { user: User }) => {
     {
       id: 'notification',
       name: 'Push Notification',
+      icon: <Bell className="h-6 w-6" />,
       connected: !!subscription,
       connect: () => {
         if (subscription) {
@@ -75,12 +78,29 @@ const Integration = ({ user }: { user: User }) => {
     {
       id: 'email',
       name: 'Email',
+      icon: <Mail className="h-6 w-6" />,
       connected: !!user.gmail?.refreshToken,
       connect: async () => {
         if (!user.gmail?.refreshToken) {
-          window.open(`${BASE_URL}/api/installation`, '_blank');
+          window.open(`${BASE_URL}/api/installation?type=gmail`, '_blank');
         } else {
           await getRequest('/transactions/sync');
+        }
+      },
+    },
+    {
+      id: 'upstok',
+      name: 'Upstok',
+      icon: <ChartPie className="h-6 w-6" />,
+      connected: !!user.upstok,
+      connect: async () => {
+        if (!user.upstok) {
+          if (user.isInternalUser) {
+            setIsUpstokIntegrationOpen(true);
+          } else {
+            window.open(`${BASE_URL}/api/installation?type=upstok`);
+          }
+        } else {
         }
       },
     },
@@ -109,20 +129,28 @@ const Integration = ({ user }: { user: User }) => {
       <CardContent className="space-y-3">
         {userIntegrations.map(integration => (
           <div key={integration.id} className="flex items-center space-x-3 w-full">
-            <div className="flex items-center justify-center p-2 rounded-full bg-muted">
-              <Mail className="h-6 w-6" />
-            </div>
+            <div className="flex items-center justify-center p-2 rounded-full bg-muted">{integration.icon}</div>
             <div className="grow">
               <p className="font-medium">{integration.name}</p>
               <p className="text-sm text-muted-foreground">{integration.connected ? 'Connected' : 'Not Connected'}</p>
             </div>
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={integration.connect}>
-              {integration.connected ? <Settings className="h-6 w-6" /> : <Link className="h-6 w-6" />}
-              <span className="sr-only">Connect {integration.name}</span>
-            </Button>
+            {integration.connected ? (
+              <RemoveIntegrationModal title={integration.name} onRemove={integration.connect}>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Settings className="h-6 w-6" />
+                  <span className="sr-only">Connect {integration.name}</span>
+                </Button>
+              </RemoveIntegrationModal>
+            ) : (
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={integration.connect}>
+                <Link className="h-6 w-6" />
+                <span className="sr-only">Connect {integration.name}</span>
+              </Button>
+            )}
           </div>
         ))}
       </CardContent>
+      <UpstokIntegrationModal isOpen={isUpstokIntegrationOpen} setIsOpen={setIsUpstokIntegrationOpen} />
     </Card>
   );
 };

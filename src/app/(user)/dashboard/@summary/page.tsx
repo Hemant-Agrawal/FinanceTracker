@@ -35,7 +35,7 @@ type OverviewData = {
 
 const Summary = async ({ searchParams }: { searchParams: Promise<{ period: string }> }) => {
   const { period } = await searchParams;
-  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period });
+  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period: period || 'week' });
 
   const cards = [
     {
@@ -75,7 +75,7 @@ const Summary = async ({ searchParams }: { searchParams: Promise<{ period: strin
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(card.value)}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1 pt-1">
+            <p className="text-xs text-muted-foreground flex items-center gap-1 pt-1 -mx-1">
               <span
                 className={`inline-flex items-center ${card.change >= 0 && !card.reverse ? 'text-green-500' : 'text-red-500'}`}
               >

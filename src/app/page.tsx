@@ -15,8 +15,14 @@ import {
   Smartphone,
 } from 'lucide-react';
 import Image from 'next/image';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await auth();
+  if (session) {
+    redirect('/dashboard');
+  }
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
