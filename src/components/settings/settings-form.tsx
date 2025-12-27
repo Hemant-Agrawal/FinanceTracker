@@ -10,15 +10,15 @@ import { Switch } from '@/ui/switch';
 import { patchRequest } from '@/lib/api';
 
 const settingsFormSchema = z.object({
-  language: z.string().default('en').optional(),
+  language: z.string().optional(),
   currency: z.string({
-    required_error: 'Please select a currency.',
+    message: 'Please select a currency.',
   }),
   dateFormat: z.string({
-    required_error: 'Please select a date format.',
+    message: 'Please select a date format.',
   }),
-  darkMode: z.boolean().default(false),
-  notifications: z.boolean().default(true),
+  darkMode: z.boolean(),
+  notifications: z.boolean(),
   monthlyBudget: z.string().optional(),
 });
 

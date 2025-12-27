@@ -26,7 +26,7 @@ const schema = z.object({
   type: z.enum(['expense', 'income', 'transfer']),
   date: z.date(),
   paymentMethod: z.string({
-    required_error: 'Payment method is required',
+    message: 'Payment method is required',
   }),
   notes: z.string(),
   tags: z.array(z.string()),

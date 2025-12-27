@@ -38,13 +38,13 @@ export function CategoryBreakdown({ className }: CategoryBreakdownProps) {
               outerRadius={80}
               fill="#8884d8"
               dataKey="value"
-              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+              label={({ name, percent }) => `${name} ${(Number(percent) * 100).toFixed(0)}%`}
             >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip formatter={value => `₹${value.toLocaleString()}`} />
+            <Tooltip formatter={value => `₹${Number(value).toLocaleString()}`} />
             <Legend />
           </PieChart>
         </ResponsiveContainer>

@@ -11,10 +11,10 @@ import { User } from '@/models/User';
 
 const profileFormSchema = z.object({
   name: z.string({
-    required_error: 'Name is required.',
+    message: 'Name is required.',
   }),
   email: z.string({
-    required_error: 'Email is required.',
+    message: 'Email is required.',
   }),
   phone: z.string().optional(),
   currency: z.string().optional(),

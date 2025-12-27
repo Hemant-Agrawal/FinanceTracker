@@ -22,7 +22,7 @@ const formSchema = z.object({
     message: 'Transaction date is required.',
   }),
   transactionType: z.enum(['buy', 'sell'], {
-    required_error: 'Transaction type is required.',
+    message: 'Transaction type is required.',
   }),
 });
 
