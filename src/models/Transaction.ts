@@ -50,7 +50,8 @@ export class TransactionModel extends BaseModel<Transaction> {
   }
 
   async getTotalIncome(filter: Filter<Transaction>, userId: ObjectId | string) {
-    const totalIncome = await this.getCollection().find({
+    const collection = await this.getCollection();
+    const totalIncome = await collection.find({
       ...filter,
       isDeleted: { $ne: true },
       createdBy: new ObjectId(userId),
@@ -61,7 +62,8 @@ export class TransactionModel extends BaseModel<Transaction> {
   }
 
   async getTotalExpenses(filter: Filter<Transaction>, userId: ObjectId | string) {
-    const totalExpenses = await this.getCollection().find({
+    const collection = await this.getCollection();
+    const totalExpenses = await collection.find({
       isDeleted: { $ne: true },
       createdBy: new ObjectId(userId),
       ...filter,
@@ -77,7 +79,8 @@ export class TransactionModel extends BaseModel<Transaction> {
     if (!filter?.status) {
       filter.status = 'approved';
     }
-    return this.getCollection()
+    const collection = await this.getCollection();
+    return collection
       .aggregate<WithId<Transaction>>([
         { $match: filter },
         {
@@ -104,6 +107,7 @@ export class TransactionModel extends BaseModel<Transaction> {
   }
 
   async deleteByAccountId(accountId: ObjectId | string) {
-    await this.getCollection().deleteMany({ accountId: new ObjectId(accountId) });
+    const collection = await this.getCollection();
+    await collection.deleteMany({ accountId: new ObjectId(accountId) });
   }
 }

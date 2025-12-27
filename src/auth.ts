@@ -1,17 +1,21 @@
+import type { NextAuthOptions } from 'next-auth';
 import NextAuth from 'next-auth';
-import Nodemailer from 'next-auth/providers/nodemailer';
+import EmailProvider from 'next-auth/providers/email';
 import { MongoDBAdapter } from '@auth/mongodb-adapter';
+import { getServerSession } from 'next-auth';
 import clientPromise from '@/lib/db';
 import { sendVerificationRequest } from './email';
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
+export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise, {
     collections: {
+      Users: 'nextauth_users',
+      Sessions: 'nextauth_sessions',
       Accounts: 'nextauth_accounts',
     },
   }),
   providers: [
-    Nodemailer({
+    EmailProvider({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: Number(process.env.EMAIL_SERVER_PORT),
@@ -53,9 +57,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // }
       return token;
     },
-    authorized: async ({ auth }) => {
-      // Logged in users are authenticated, otherwise redirect to login page
-      return !!auth;
-    },
   },
-});
+};
+
+// Export NextAuth handler
+export default NextAuth(authOptions);
+
+// Export getServerSession as auth for backward compatibility
+export async function auth() {
+  return await getServerSession(authOptions);
+}

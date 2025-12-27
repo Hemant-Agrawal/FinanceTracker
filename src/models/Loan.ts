@@ -31,7 +31,8 @@ export class LoanModel extends BaseModel<Loan> {
   }
 
   async updateBalance(accountId: ObjectId, amount: number, session?: ClientSession) {
-    const updateResult = await this.getCollection().updateOne(
+    const collection = await this.getCollection();
+    const updateResult = await collection.updateOne(
       { _id: accountId },
       { $inc: { currentBalance: amount }, $set: { updatedAt: new Date() } },
       { session }

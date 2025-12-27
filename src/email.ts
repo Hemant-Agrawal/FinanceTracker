@@ -1,9 +1,9 @@
 import { createTransport } from 'nodemailer';
 import { MagicLinkEmail } from './components/email/signin';
 import { render } from '@react-email/components';
-import { NodemailerConfig } from 'next-auth/providers/nodemailer';
+import type { EmailConfig } from 'next-auth/providers/email';
 
-export async function sendVerificationRequest(params: { identifier: string; url: string; provider: NodemailerConfig }) {
+export async function sendVerificationRequest(params: { identifier: string; url: string; provider: EmailConfig }) {
   const { identifier, url, provider } = params;
   const transport = createTransport(provider.server);
   const emailHtml = await render(MagicLinkEmail({ magicLink: url }));

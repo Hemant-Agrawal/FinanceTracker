@@ -1,17 +1,16 @@
+import clientPromise from '@/lib/db';
 import {
   ClientSession,
-  Collection,
-  Db,
   Filter,
   GridFSBucket,
-  MongoClient,
   ObjectId,
   OptionalUnlessRequiredId,
   Sort,
   UpdateFilter,
   WithId,
 } from 'mongodb';
-import { connectClient } from '@/lib/mongodb';
+
+
 
 export interface Model {
   _id?: ObjectId;
@@ -36,31 +35,28 @@ export interface PaginatedResult<T> {
 }
 export class BaseModel<T extends Model> {
   private collectionName: string;
-  private db!: Db;
-  private client!: MongoClient;
-  private bucket!: GridFSBucket;
-  private collection!: Collection<T>;
+  private bucketName: string;
 
   constructor(collectionName: string, bucketName: string = 'attachments') {
     this.collectionName = collectionName;
-    this.init(bucketName);
+    this.bucketName = bucketName;
   }
 
-  private async init(bucketName: string) {
-    this.client = await connectClient();
-    this.db = this.client.db();
-    if (bucketName) {
-      this.bucket = new GridFSBucket(this.db, { bucketName });
-    }
-    this.collection = this.db.collection<T>(this.collectionName);
+  async getCollection() {
+    const client = await clientPromise;
+    const db = client.db();
+    return db.collection<T>(this.collectionName);
   }
 
-  getCollection() {
-    return this.collection;
+  async getBucket() {
+    const client = await clientPromise;
+    const db = client.db();
+    return new GridFSBucket(db, { bucketName: this.bucketName });
   }
 
   async uploadToBucket(filename: string, mimeType: string, data: string): Promise<ObjectId> {
-    const uploadStream = this.bucket.openUploadStream(filename, {
+    const bucket = await this.getBucket();
+    const uploadStream = bucket.openUploadStream(filename, {
       metadata: { mimeType },
     });
 
@@ -86,13 +82,15 @@ export class BaseModel<T extends Model> {
     document.createdBy = new ObjectId(userId);
     document.updatedBy = new ObjectId(userId);
     document.accessibleBy = [new ObjectId(userId)];
-    const result = await this.collection.insertOne(document);
+    const collection = await this.getCollection();
+    const result = await collection.insertOne(document);
     return result.insertedId;
   }
 
   // Check if a document exists with given filter
   async exists(filter: Filter<T>): Promise<boolean> {
-    const count = await this.collection.countDocuments({
+    const collection = await this.getCollection();
+    const count = await collection.countDocuments({
       ...filter,
       isDeleted: { $ne: true },
     });
@@ -101,7 +99,8 @@ export class BaseModel<T extends Model> {
 
   // Find a document by ID
   async findById(id: string): Promise<WithId<T> | null> {
-    return this.collection.findOne({
+    const collection = await this.getCollection();
+    return collection.findOne({
       _id: new ObjectId(id),
       isDeleted: { $ne: true },
     } as Filter<T>);
@@ -109,7 +108,8 @@ export class BaseModel<T extends Model> {
 
   // Find all documents with optional filter
   async find(filter: Filter<T> = {}): Promise<WithId<T>[]> {
-    return this.collection.find(filter as Filter<T>).toArray();
+    const collection = await this.getCollection();
+    return collection.find(filter as Filter<T>).toArray();
   }
 
   // Update a document by ID
@@ -118,13 +118,15 @@ export class BaseModel<T extends Model> {
     if (userId) {
       updatedData.updatedBy = userId;
     }
-    const result = await this.collection.updateOne({ _id: new ObjectId(id) } as Filter<T>, { $set: updatedData });
+    const collection = await this.getCollection();
+    const result = await collection.updateOne({ _id: new ObjectId(id) } as Filter<T>, { $set: updatedData });
     return result.modifiedCount > 0;
   }
 
   // Update a document by ID
   async updateOne(filter: Filter<T>, updatedData: Document[] | UpdateFilter<T>): Promise<boolean> {
-    const result = await this.collection.updateOne(filter as Filter<T>, updatedData);
+    const collection = await this.getCollection();
+    const result = await collection.updateOne(filter as Filter<T>, updatedData);
     return result.modifiedCount > 0;
   }
 
@@ -135,7 +137,8 @@ export class BaseModel<T extends Model> {
 
   // List all documents with optional sorting and pagination
   async list(filter: Filter<T> = {}, limit = 10, skip = 0, sort: Sort = {}): Promise<WithId<T>[]> {
-    return this.collection
+    const collection = await this.getCollection();
+    return collection
       .find({ ...filter, isDeleted: { $ne: true } })
       .sort(sort)
       .skip(skip)
@@ -145,6 +148,7 @@ export class BaseModel<T extends Model> {
 
   // Get paginated results with metadata
   async paginate(filter: Filter<T> = {}, page = 1, itemsPerPage = 10, sort: Sort = {}): Promise<PaginatedResult<T>> {
+    const collection = await this.getCollection();
     // Ensure page is at least 1
     page = Math.max(1, page);
 
@@ -157,7 +161,7 @@ export class BaseModel<T extends Model> {
     // Execute queries in parallel
     const [data, totalItems] = await Promise.all([
       this.list(finalFilter, itemsPerPage, skip, sort),
-      this.collection.countDocuments(finalFilter),
+      collection.countDocuments(finalFilter),
     ]);
 
     // Calculate pagination metadata
@@ -177,7 +181,8 @@ export class BaseModel<T extends Model> {
 
   // 🔹 Start a transaction and pass session to callback
   async withTransaction<R>(callback: (session: ClientSession) => Promise<R>): Promise<R> {
-    const session = this.client.startSession();
+    const client = await clientPromise;
+    const session = client.startSession();
     try {
       session.startTransaction();
       const result = await callback(session);

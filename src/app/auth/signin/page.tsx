@@ -19,7 +19,7 @@ export default function SignIn() {
 
     setIsLoading(true);
     try {
-      const result = await signIn('nodemailer', { email });
+      const result = await signIn('email', { email, redirect: false });
 
       if (result?.error) {
         toast({
