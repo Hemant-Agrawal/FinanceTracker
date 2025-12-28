@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { DashboardShell, DashboardHeader } from '@/components/dashboard';
 import { AccountDetails } from '@/components/accounts/account-details';
-import { fetchTransactions, getAccountById } from '@/lib/server-api';
+import { getTransactions, getAccountById } from '@/lib/actions';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
 import { DeleteAccountModal } from '@/components/accounts/delete-account-modal';
@@ -22,7 +22,7 @@ export default async function AccountPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
-  const { data: transactions } = await fetchTransactions({ accountId: id });
+  const { data: transactions } = await getTransactions({});
 
   return (
     <DashboardShell>

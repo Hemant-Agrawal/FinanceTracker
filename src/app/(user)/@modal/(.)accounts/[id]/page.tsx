@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { AccountDetails } from '@/components/accounts/account-details';
-import { getAccountById } from '@/lib/server-api';
+import { getAccountById } from '@/lib/actions';
 import Modal from '../../modal';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';

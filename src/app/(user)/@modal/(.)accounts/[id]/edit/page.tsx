@@ -1,5 +1,5 @@
 import { AccountForm } from '@/components/accounts/account-form';
-import { getAccountById } from '@/lib/server-api';
+import { getAccountById } from '@/lib/actions';
 import { notFound } from 'next/navigation';
 import Modal from '@/modal';
 

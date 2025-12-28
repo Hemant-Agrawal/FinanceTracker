@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Link, Mail, Settings } from 'lucide-react';
 import { User } from '@/models/User';
-import { getRequest } from '@/lib/api';
+// Note: transactions/sync is still an API route, not converted to server action yet
 import { Button } from '../ui/button';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -80,7 +80,7 @@ const Integration = ({ user }: { user: User }) => {
         if (!user.gmail?.refreshToken) {
           window.open(`${BASE_URL}/api/installation`, '_blank');
         } else {
-          await getRequest('/transactions/sync');
+          await fetch('/api/transactions/sync', { method: 'POST' });
         }
       },
     },

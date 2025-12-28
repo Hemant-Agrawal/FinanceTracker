@@ -7,6 +7,10 @@ import { Button } from '@/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/ui/card';
 import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
+import { createInvestmentTransaction } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
+import { ObjectId } from 'mongodb';
+import { InvestmentTransactionType } from '@/models/InvestmentTransaction';
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -27,6 +31,7 @@ const formSchema = z.object({
 });
 
 export function InvestmentTransactionForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,14 +43,34 @@ export function InvestmentTransactionForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real app, this would save the transaction to the database
-    console.log(values);
-    toast({
-      title: 'Transaction recorded',
-      description: 'Your investment transaction has been recorded successfully.',
-    });
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      // Convert transactionType to InvestmentTransactionType ('Buy' | 'Sell')
+      const transactionType: InvestmentTransactionType = values.transactionType === 'buy' ? 'Buy' : 'Sell';
+      
+      await createInvestmentTransaction({
+        investmentId: new ObjectId(), // TODO: This should come from form or context
+        accountId: new ObjectId(), // TODO: This should come from form or context
+        type: transactionType,
+        date: new Date(values.date),
+        totalAmount: parseFloat(values.amount),
+        pricePerUnit: 0, // TODO: Calculate or get from form
+        quantity: 0, // TODO: Get from form
+        notes: values.name, // Using name as notes for now
+      } as any); // Using type assertion since form is incomplete
+      toast({
+        title: 'Transaction recorded',
+        description: 'Your investment transaction has been recorded successfully.',
+      });
+      router.refresh();
+      form.reset();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to record transaction',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (

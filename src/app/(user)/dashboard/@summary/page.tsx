@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowDown, ArrowUp, Percent, Wallet } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
-import { getRequest } from '@/lib/server-api';
+import { getDashboardSummary } from '@/lib/actions';
 
 function getPeriodText(period: string) {
   switch (period) {
@@ -35,7 +35,7 @@ type OverviewData = {
 
 const Summary = async ({ searchParams }: { searchParams: Promise<{ period: string }> }) => {
   const { period } = await searchParams;
-  const overviewData = await getRequest<OverviewData>('/dashboard/summary', { period });
+  const overviewData = await getDashboardSummary(period);
 
   const cards = [
     {

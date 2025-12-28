@@ -2,14 +2,14 @@ import { DashboardShell } from '@/components/dashboard/dashboard-shell';
 import { ProfileForm } from '@/components/settings/profile-form';
 import ProfilePictureForm from '@/components/settings/profile-picture-form';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { getRequest } from '@/lib/server-api';
+import { getUser } from '@/lib/actions';
 import { Camera } from 'lucide-react';
 import UserAvatar from '@/components/common/user-avatar';
 import { User } from '@/models/User';
 import Integration from '@/components/settings/integration';
 
 export default async function SettingsPage() {
-  const user = await getRequest<User>('/users');
+  const user = await getUser();
 
   return (
     <DashboardShell>

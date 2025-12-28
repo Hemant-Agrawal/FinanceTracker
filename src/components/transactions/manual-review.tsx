@@ -11,7 +11,7 @@ import EmailViewer from '@/components/common/email-viewer';
 import { Transaction } from '@/models/Transaction';
 import { EmailRecord } from '@/models/EmailRecord';
 import { TransactionDetails } from './transaction-details';
-import { postRequest } from '@/lib/api';
+import { approveTransaction, rejectTransaction } from '@/lib/actions';
 
 export default function TransactionReview({
   transactions,
@@ -64,15 +64,19 @@ export default function TransactionReview({
   };
 
   const updateStatus = async (status: string) => {
-    if (!transaction) return;
+    if (!transaction || !transaction._id) return;
 
     try {
-      await postRequest(`/transactions/${transaction._id}/${status}`);
+      if (status === 'approve') {
+        await approveTransaction(transaction._id.toString());
+      } else {
+        await rejectTransaction(transaction._id.toString());
+      }
 
       toast({
         title: `Transaction ${status === 'approve' ? 'approved' : 'rejected'}`,
         description: `Transaction #${transaction._id} has been ${status}`,
-        variant: status === 'approve' ? 'success' : 'destructive',
+        variant: status === 'approve' ? 'default' : 'destructive',
       });
 
       // Move to next pending transaction
@@ -87,11 +91,12 @@ export default function TransactionReview({
           setCurrentIndex(firstPendingIndex);
         }
       }
+      router.refresh();
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast({
         title: 'Error updating transaction',
-        description: 'Please try again',
+        description: error instanceof Error ? error.message : 'Please try again',
         variant: 'destructive',
       });
     }

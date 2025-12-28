@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { deleteRequest } from '@/lib/api';
+import { deleteAccount } from '@/lib/actions';
 import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -25,14 +25,24 @@ interface DeleteAccountModalProps {
 export function DeleteAccountModal({ account, children }: DeleteAccountModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const onDelete = () => {
-    deleteRequest(`/accounts/${account._id}`).then(() => {
-      router.refresh();
+  const onDelete = async () => {
+    try {
+      if (account._id) {
+        await deleteAccount(account._id.toString());
+        router.refresh();
+        toast({
+          title: 'Account Deleted',
+          description: 'Account have been deleted successfully.',
+        });
+        setIsOpen(false);
+      }
+    } catch (error) {
       toast({
-        title: 'Account Deleted',
-        description: 'Account have been deleted successfully.',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to delete account',
+        variant: 'destructive',
       });
-    });
+    }
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

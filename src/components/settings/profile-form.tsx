@@ -6,7 +6,7 @@ import * as z from 'zod';
 import { Button } from '@/ui/button';
 import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
-import { patchRequest } from '@/lib/api';
+import { updateUser } from '@/lib/actions';
 import { User } from '@/models/User';
 
 const profileFormSchema = z.object({
@@ -34,20 +34,20 @@ export function ProfileForm({ user }: { user: User }) {
     },
   });
 
-  function onSubmit(data: ProfileFormValues) {
-    patchRequest('/users', data)
-      .then(() => {
-        toast({
-          title: 'Settings updated',
-          description: 'Your settings have been updated successfully.',
-        });
-      })
-      .catch(err => {
-        toast({
-          title: 'Error updating settings',
-          description: err.message,
-        });
+  async function onSubmit(data: ProfileFormValues) {
+    try {
+      await updateUser(data);
+      toast({
+        title: 'Settings updated',
+        description: 'Your settings have been updated successfully.',
       });
+    } catch (err) {
+      toast({
+        title: 'Error updating settings',
+        description: err instanceof Error ? err.message : 'Failed to update settings',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (

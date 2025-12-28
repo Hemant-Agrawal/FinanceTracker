@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { deleteRequest } from '@/lib/api';
+import { deleteTransaction } from '@/lib/actions';
 import { Transaction } from '@/models/Transaction';
 import { AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -25,14 +25,24 @@ interface DeleteTransactionModalProps {
 export function DeleteTransactionModal({ transaction, children }: DeleteTransactionModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const onDelete = () => {
-    deleteRequest(`/transactions/${transaction._id}`).then(() => {
-      router.refresh();
+  const onDelete = async () => {
+    try {
+      if (transaction._id) {
+        await deleteTransaction(transaction._id.toString());
+        router.refresh();
+        toast({
+          title: 'Transaction Deleted',
+          description: 'Transaction have been deleted successfully.',
+        });
+        setIsOpen(false);
+      }
+    } catch (error) {
       toast({
-        title: 'Transaction Deleted',
-        description: 'Transaction have been deleted successfully.',
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to delete transaction',
+        variant: 'destructive',
       });
-    });
+    }
   };
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

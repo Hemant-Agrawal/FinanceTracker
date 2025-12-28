@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { toast } from '@/hooks/use-toast';
 import { Account } from '@/models/Account';
-import { patchRequest, postRequest } from '@/lib/api';
+import { createAccount, updateAccount } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 import { AccountTypes } from '@/config';
 import { Form, FormField } from '../ui/form';
@@ -47,19 +47,29 @@ export function AccountForm({ account }: AccountFormProps) {
   });
 
   async function onSubmit(data: AccountFormValues) {
-    let response;
-    if (isEdit) {
-      response = await patchRequest(`/accounts/${account?._id}`, data);
-    } else {
-      response = await postRequest('/accounts', data);
-    }
-    if (response) {
+    try {
+      const accountData: Partial<Account> = {
+        ...data,
+        openingBalance: parseFloat(data.openingBalance) || 0,
+      };
+      
+      if (isEdit && account?._id) {
+        await updateAccount(account._id.toString(), accountData);
+      } else {
+        await createAccount(accountData);
+      }
       toast({
         title: isEdit ? 'Account updated' : 'Account created',
         description: `Your account has been ${isEdit ? 'updated' : 'created'} successfully.`,
       });
       router.back();
       router.refresh();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Something went wrong',
+        variant: 'destructive',
+      });
     }
     form.reset();
   }

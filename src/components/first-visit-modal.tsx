@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormField } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { useSession } from 'next-auth/react';
-import { patchRequest } from '@/lib/api';
+import { updateUser } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
@@ -47,20 +47,28 @@ export function FirstVisitModal() {
   });
 
   async function onSubmit(data: FormValues) {
-    await patchRequest('/users', data);
-    toast({
-      title: 'Profile information saved',
-      description: 'Thank you for providing your details!',
-    });
-    update({
-      ...session,
-      user: {
-        ...session?.user,
-        ...data,
-      },
-    });
-    router.push('/dashboard');
-    setIsOpen(false);
+    try {
+      await updateUser(data);
+      toast({
+        title: 'Profile information saved',
+        description: 'Thank you for providing your details!',
+      });
+      update({
+        ...session,
+        user: {
+          ...session?.user,
+          ...data,
+        },
+      });
+      router.push('/dashboard');
+      setIsOpen(false);
+    } catch (error) {
+      toast({
+        title: 'Error saving profile',
+        description: error instanceof Error ? error.message : 'Failed to save',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (

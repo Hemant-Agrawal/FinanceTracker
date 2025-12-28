@@ -13,7 +13,7 @@ import { Button } from '@/ui/button';
 import { Slider } from '@/ui/slider';
 import { Check, Move, RotateCcw, RotateCw, ZoomIn, ZoomOut } from 'lucide-react';
 import { User } from '@/models/User';
-import { patchRequest } from '@/lib/api';
+import { updateUser } from '@/lib/actions';
 import { useTouchGestures } from '@/hooks/use-touch-gestures';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
@@ -68,21 +68,29 @@ const ProfilePictureForm = ({ children, user }: Props) => {
 
   const handleSaveAvatar = async () => {
     if (selectedImage) {
-      await patchRequest('/users', {
-        avatar: {
-          url: selectedImage,
-          rotation: rotation,
-          zoom: zoom[0],
-          position: {
-            x: position.x,
-            y: position.y,
+      try {
+        await updateUser({
+          avatar: {
+            url: selectedImage,
+            rotation: rotation,
+            zoom: zoom[0],
+            position: {
+              x: position.x,
+              y: position.y,
+            },
           },
-        },
-      });
-      toast({
-        title: 'Profile picture updated',
-      });
-      router.refresh();
+        });
+        toast({
+          title: 'Profile picture updated',
+        });
+        router.refresh();
+      } catch (error) {
+        toast({
+          title: 'Error updating profile picture',
+          description: error instanceof Error ? error.message : 'Failed to update',
+          variant: 'destructive',
+        });
+      }
     }
     setIsOpen(false);
   };

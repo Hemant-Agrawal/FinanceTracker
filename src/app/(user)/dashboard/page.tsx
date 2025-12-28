@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { fetchRecentTransactions } from '@/lib/server-api';
+import { getRecentTransactions } from '@/lib/actions';
 import { TransactionsTable } from '@/components/transactions/transactions-table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const transactions = await fetchRecentTransactions();
+  const transactions = await getRecentTransactions();
   return (
     <Card>
       <CardHeader>

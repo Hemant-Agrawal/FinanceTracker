@@ -3,7 +3,7 @@ import { ViewToggle } from '@/ui/view-toggle';
 import { Button } from '@/ui/button';
 import { Plus } from 'lucide-react';
 import { Filters } from '@/components/common/filter';
-import { fetchTransactions, fetchAccounts } from '@/lib/server-api';
+import { getTransactions, getAccounts } from '@/lib/actions';
 import Pagination from '@/components/common/pagination';
 import Transactions from '@/components/transactions';
 import { BulkActionsMenu } from '@/table-grid-view/bulk-actions-menu';
@@ -15,12 +15,20 @@ interface Props {
 
 export default async function Page({ searchParams }: Props) {
   const params = await searchParams;
-  const { data: accounts } = await fetchAccounts({});
+  const accountsResult = await getAccounts({});
+  const { data: accounts } = accountsResult;
   const paymentMethod = accounts.find(account => account.name === params.paymentMethod);
   if (paymentMethod) {
     params.paymentMethod = paymentMethod._id.toString();
   }
-  const { data: transactions, pagination } = await fetchTransactions(params);
+  const transactionsResult = await getTransactions({
+    pageSize: params.pageSize ? parseInt(String(params.pageSize)) : undefined,
+    page: params.page ? parseInt(String(params.page)) : undefined,
+    search: params.search ? String(params.search) : undefined,
+    sortField: params.sortField ? String(params.sortField) : undefined,
+    sortOrder: params.sortOrder === 'asc' ? 'asc' : 'desc',
+  });
+  const { data: transactions, pagination } = transactionsResult;
 
   const filters = {
     Categories: {

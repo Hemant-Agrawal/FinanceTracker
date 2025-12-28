@@ -5,7 +5,7 @@ import { Plus, Minus } from 'lucide-react';
 import { Button } from '@/ui/button';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { PaymentMethod, Transaction } from '@/models/Transaction';
-import { createTransaction, updateTransaction } from '@/lib/api';
+import { createTransaction, updateTransaction } from '@/lib/actions';
 import { Account } from '@/models/Account';
 import { WithId } from 'mongodb';
 import { useRouter } from 'next/navigation';
@@ -66,29 +66,31 @@ export function TransactionForm({ transaction, paymentMethods }: TransactionForm
   }, [transaction, isEdit, reset]);
 
   const onSubmit: SubmitHandler<TransactionFormValues> = async data => {
-    const parsedAmount = data.type === 'expense' ? -Math.abs(+data.amount) : Math.abs(+data.amount);
+    try {
+      const parsedAmount = data.type === 'expense' ? -Math.abs(+data.amount) : Math.abs(+data.amount);
 
-    const newTransaction: Transaction = {
-      _id: transaction && isEdit ? transaction._id : undefined,
-      description: data.description,
-      amount: parsedAmount,
-      date: data.date,
-      paymentMethod: data.paymentMethod as unknown as PaymentMethod,
-      tags: data.tags as string[],
-      notes: data.notes,
-      type: data.type,
-      history: [],
-    };
+      const newTransaction: Partial<Transaction> = {
+        description: data.description,
+        amount: parsedAmount,
+        date: data.date,
+        paymentMethod: data.paymentMethod as any, // Server function handles string ID conversion
+        tags: data.tags as string[],
+        notes: data.notes,
+        type: data.type,
+        history: [],
+      };
 
-    if (transaction?._id) {
-      await updateTransaction(transaction._id.toString(), newTransaction);
-    } else {
-      await createTransaction(newTransaction);
+      if (transaction?._id) {
+        await updateTransaction(transaction._id.toString(), newTransaction);
+      } else {
+        await createTransaction(newTransaction);
+      }
+      router.back();
+      router.refresh();
+    } catch (error) {
+      console.error('Error saving transaction:', error);
     }
-    router.back();
-
     reset();
-    // onAdd(newTransaction);
   };
   const transactionTypes = [
     {

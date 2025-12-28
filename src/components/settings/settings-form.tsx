@@ -7,7 +7,7 @@ import { Button } from '@/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/ui/switch';
-import { patchRequest } from '@/lib/api';
+import { updateUser } from '@/lib/actions';
 
 const settingsFormSchema = z.object({
   language: z.string().optional(),
@@ -40,20 +40,20 @@ export function SettingsForm() {
     defaultValues,
   });
 
-  function onSubmit(data: SettingsFormValues) {
-    patchRequest('/users', data)
-      .then(() => {
-        toast({
-          title: 'Settings updated',
-          description: 'Your settings have been updated successfully.',
-        });
-      })
-      .catch(err => {
-        toast({
-          title: 'Error updating settings',
-          description: err.message,
-        });
+  async function onSubmit(data: SettingsFormValues) {
+    try {
+      await updateUser(data);
+      toast({
+        title: 'Settings updated',
+        description: 'Your settings have been updated successfully.',
       });
+    } catch (err) {
+      toast({
+        title: 'Error updating settings',
+        description: err instanceof Error ? err.message : 'Failed to update settings',
+        variant: 'destructive',
+      });
+    }
   }
 
   return (

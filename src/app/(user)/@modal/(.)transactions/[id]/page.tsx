@@ -1,7 +1,7 @@
 import Modal from '@/app/(user)/@modal/modal';
 import { Button } from '@/components/ui/button';
 import { Edit, Trash } from 'lucide-react';
-import { getTransactionById } from '@/lib/server-api';
+import { getTransactionById } from '@/lib/actions';
 import Link from 'next/link';
 import { TransactionDetails } from '@/components/transactions/transaction-details';
 import { notFound } from 'next/navigation';

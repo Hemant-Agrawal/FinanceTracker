@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import TransactionReview from '@/components/transactions/manual-review';
-import { fetchTransactionsForReview } from '@/lib/server-api';
+import { getTransactionsForReview } from '@/lib/actions';
 import Modal from '@/modal';
 
 export const metadata: Metadata = {
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ReviewPage() {
-  const { transactions, emailRecords } = await fetchTransactionsForReview();
+  const { transactions, emailRecords } = await getTransactionsForReview();
 
   return (
     <Modal title="Review Transactions" description="" className="max-w-screen-xl">

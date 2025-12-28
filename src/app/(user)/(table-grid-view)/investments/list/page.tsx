@@ -4,7 +4,7 @@ import { ViewToggle } from '@/ui/view-toggle';
 import { Filters } from '@/components/common/filter';
 import Investments from '@/components/investments';
 import Pagination from '@/components/common/pagination';
-import { fetchInvestments } from '@/lib/server-api';
+import { getInvestments } from '@/lib/actions';
 import { BulkActionsMenu } from '@/table-grid-view/bulk-actions-menu';
 
 interface Props {
@@ -13,7 +13,13 @@ interface Props {
 
 export default async function Page({ searchParams }: Props) {
   const params = await searchParams;
-  const { data: investments, pagination } = await fetchInvestments(params);
+  const { data: investments, pagination } = await getInvestments({
+    pageSize: params.pageSize ? parseInt(String(params.pageSize)) : undefined,
+    page: params.page ? parseInt(String(params.page)) : undefined,
+    search: params.search ? String(params.search) : undefined,
+    sortField: params.sortField ? String(params.sortField) : undefined,
+    sortOrder: params.sortOrder === 'asc' ? 'asc' : 'desc',
+  });
   const filters = {};
 
   return (

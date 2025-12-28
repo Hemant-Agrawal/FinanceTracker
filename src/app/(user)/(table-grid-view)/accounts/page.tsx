@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { DashboardHeader, DashboardShell } from '@/components/dashboard';
-import { fetchAccounts } from '@/lib/server-api';
+import { getAccounts } from '@/lib/actions';
 import Pagination from '@/components/common/pagination';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -18,7 +18,13 @@ interface PageProps {
 
 export default async function AccountsPage({ searchParams }: PageProps) {
   const params = await searchParams;
-  const { data: accounts, pagination } = await fetchAccounts(params);
+  const { data: accounts, pagination } = await getAccounts({
+    pageSize: params.pageSize ? parseInt(String(params.pageSize)) : undefined,
+    page: params.page ? parseInt(String(params.page)) : undefined,
+    search: params.search ? String(params.search) : undefined,
+    sortField: params.sortField ? String(params.sortField) : undefined,
+    sortOrder: params.sortOrder === 'asc' ? 'asc' : 'desc',
+  });
   return (
     <DashboardShell>
       <DashboardHeader heading="Accounts" text="View and manage your financial accounts">
