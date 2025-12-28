@@ -111,7 +111,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
                       duration: 0.2,
                     },
                   }}
-                  className="flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+                  className="flex items-center gap-2 rounded-full bg-background border border-border px-4 py-2 text-sm font-medium text-foreground shadow-lg hover:bg-accent hover:text-accent-foreground hover:border-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-all"
                   aria-label={item.label}
                 >
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -126,7 +126,7 @@ export function FloatingActionButton({ className }: FloatingActionButtonProps) {
 
         <motion.button
           onClick={toggleMenu}
-          className="flex h-14 w-14 items-center justify-center text-primary-foreground rounded-full bg-primary shadow-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="flex h-14 w-14 items-center justify-center text-primary-foreground rounded-full bg-primary border-2 border-primary/50 hover:border-primary shadow-lg hover:bg-primary/90 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-all"
           whileTap={{ scale: 0.9 }}
           aria-label={isOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={isOpen}

@@ -13,7 +13,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  ResponsiveContainer,
 } from 'recharts';
 import { CurveType } from 'recharts/types/shape/Curve';
 import { cn } from '@/lib/utils';
@@ -115,10 +114,12 @@ const GenericChart: React.FC<GenericChartProps> = ({
   };
 
   return (
-    <ChartContainer config={config as ChartConfig} className={cn('w-full h-full', className)}>
-      <ResponsiveContainer width="100%" height="100%">
-        {renderChart()}
-      </ResponsiveContainer>
+    <ChartContainer 
+      config={config as ChartConfig} 
+      className={cn('w-full h-full min-h-[300px]', className)}
+      style={{ minHeight: '300px', height: '100%' }}
+    >
+      {renderChart()}
     </ChartContainer>
   );
 };

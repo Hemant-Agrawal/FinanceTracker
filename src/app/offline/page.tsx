@@ -1,9 +1,6 @@
-import { Offline } from "@/components/offline"
+'use client';
 
-export const metadata = {
-  title: "You're Offline | Expense Tracker",
-  description: "You're currently offline. Please check your internet connection.",
-}
+import { Offline } from "@/components/offline"
 
 export default function OfflinePage() {
   return <Offline />

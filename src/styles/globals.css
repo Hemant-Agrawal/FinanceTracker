@@ -76,15 +76,42 @@
     border-color: hsl(var(--border));
   }
   
+  /* Allow buttons to override default border color */
+  button[class*="border-"] {
+    border-color: inherit;
+  }
+  
   body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+  }
+  
+  /* Ensure background utility classes work correctly */
+  .bg-background {
+    background-color: hsl(var(--background));
+  }
+  
+  /* Tailwind v4: Restore pointer cursor for buttons */
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer base {
+  /* Ensure backdrop overlays are properly opaque */
+  [data-radix-dialog-overlay],
+  [data-radix-alert-dialog-overlay],
+  [data-radix-drawer-overlay] {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 }

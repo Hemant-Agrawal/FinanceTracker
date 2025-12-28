@@ -11,7 +11,7 @@ export default async function Breakdown() {
         <CardTitle>Spending Breakdown</CardTitle>
         <CardDescription>Category-wise expense distribution</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="h-[400px]">
         <Chart type="pie" data={[]} xAxisKey="name" dataKeys={['value']} />
       </CardContent>
     </Card>

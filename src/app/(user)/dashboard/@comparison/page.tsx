@@ -12,7 +12,7 @@ export default async function ComparisonChart({ searchParams }: { searchParams: 
         <CardTitle>Income vs Expenses</CardTitle>
         <CardDescription>Compare your monthly income and expenses</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-[400px]">
         <Chart
           type="bar"
           data={data as unknown as Record<string, unknown>[]}

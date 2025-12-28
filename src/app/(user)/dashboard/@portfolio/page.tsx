@@ -32,7 +32,7 @@ export default async function Portfolio() {
         </div>
         <CardDescription>Track your investment performance</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="h-[400px]">
         <Chart type="line" data={investmentData} xAxisKey="month" dataKeys={[{ key: 'value', label: 'Value' }]} />
       </CardContent>
     </Card>
